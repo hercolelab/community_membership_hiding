@@ -29,8 +29,8 @@ if __name__ == "__main__":
     args = get_args()
 
     datasets = [
-        FilePaths.KAR.value,
-        #FilePaths.WORDS.value,
+        #FilePaths.KAR.value,
+        FilePaths.WORDS.value,
         #FilePaths.VOTE.value,
         # FilePaths.NETS.value,
         #FilePaths.POW.value,
@@ -61,6 +61,7 @@ if __name__ == "__main__":
             agent.grid_search()
             end_train_time = time.time()
             train_time = end_train_time - start_train_time
+            print(f" Agent training time: {train_time}")
 
             # ° ------    TEST    ------ ° #
             #elif args.mode == "test" or args.mode == "both":
@@ -103,6 +104,7 @@ if __name__ == "__main__":
                     print("* * Beta Node = {}".format(beta))
                     node_hiding.set_parameters(beta=beta, tau=tau)
                     node_hiding.run_experiment()
+                    print(f"* Agent test time: {node_hiding.agent_test_time}")
 
             # print("* Community Hiding")  #  with tau = {}".format(tau))
             # for beta in community_betas:

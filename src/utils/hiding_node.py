@@ -61,6 +61,8 @@ class NodeHiding:
         self.edge_budget = None
         self.max_steps = None
 
+        self.agent_test_time = 0
+
         # HyperParams.ALGS_EVAL.value
         self.evaluation_algs = [
             "Agent",
@@ -243,6 +245,9 @@ class NodeHiding:
         start = time.time()
         alg_name, new_communities, step = function()
         end = time.time() - start
+
+        if function == self.run_agent:
+            self.agent_test_time += end
 
         # Compute NMI
         nmi = self.get_nmi(self.community_structure, new_communities)

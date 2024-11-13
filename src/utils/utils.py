@@ -78,7 +78,7 @@ class HyperParams(Enum):
     """Hyperparameters for the Environment"""
 
     # ! REAL GRAPH Graph path (change the following line to change the graph)
-    GRAPH_NAME = FilePaths.KAR.value
+    GRAPH_NAME = FilePaths.WORDS.value
     # ! Define the detection algorithm to use (change the following line to change the algorithm)
     DETECTION_ALG_NAME = DetectionAlgorithmsNames.GRE.value
     # Multiplier for the rewiring action number, i.e. (mean_degree * BETA)
