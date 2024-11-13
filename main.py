@@ -7,6 +7,7 @@ from src.utils.hiding_community import CommunityHiding
 
 import argparse
 import math
+import time
 
 
 def get_args():
@@ -17,11 +18,11 @@ def get_args():
     -------
     args : argparse.Namespace
     """
-    parser = argparse.ArgumentParser(description="PyTorch A2C")
+    #parser = argparse.ArgumentParser(description="PyTorch A2C")
     # Mode: train or test
-    parser.add_argument("--mode", type=str, default="both", help="train | test | both")
+    #parser.add_argument("--mode", type=str, default="both", help="train | test | both")
     # Argument parsing
-    return parser.parse_args()
+    #return parser.parse_args()
 
 
 if __name__ == "__main__":
@@ -29,17 +30,17 @@ if __name__ == "__main__":
 
     datasets = [
         FilePaths.KAR.value,
-        FilePaths.WORDS.value,
-        FilePaths.VOTE.value,
+        #FilePaths.WORDS.value,
+        #FilePaths.VOTE.value,
         # FilePaths.NETS.value,
-        FilePaths.POW.value,
-        FilePaths.FB_75.value,
+        #FilePaths.POW.value,
+        #FilePaths.FB_75.value,
         # FilePaths.ASTR.value,
     ]
     detection_algs = [
         DetectionAlgorithmsNames.GRE.value,
-        DetectionAlgorithmsNames.LOUV.value,
-        DetectionAlgorithmsNames.WALK.value,
+        #DetectionAlgorithmsNames.LOUV.value,
+        #DetectionAlgorithmsNames.WALK.value,
     ]
 
     for dataset in datasets:
@@ -54,57 +55,62 @@ if __name__ == "__main__":
             agent.env.set_communities(alg)
 
             # ° ------    TRAIN    ------ ° #
-            if args.mode == "train" or args.mode == "both":
-                # Training
-                agent.grid_search()
+            #if args.mode == "train" or args.mode == "both":
+            start_train_time = time.time()
+            # Training
+            agent.grid_search()
+            end_train_time = time.time()
+            train_time = end_train_time - start_train_time
 
             # ° ------    TEST    ------ ° #
-            elif args.mode == "test" or args.mode == "both":
-                # To change the detection algorithm, or the dataset, on which the model
-                # will be tested, please refer to the class HyperParams in the file
-                # src/utils/utils.py, changing the values of the variables:
-                # - GRAPH_NAME, for the dataset
-                # - DETECTION_ALG, for the detection algorithm
+            #elif args.mode == "test" or args.mode == "both":
+            # To change the detection algorithm, or the dataset, on which the model
+            # will be tested, please refer to the class HyperParams in the file
+            # src/utils/utils.py, changing the values of the variables:
+            # - GRAPH_NAME, for the dataset
+            # - DETECTION_ALG, for the detection algorithm
 
-                # To change the model path, please refer to the class FilePaths in the
-                # file src/utils/utils.py
-                model_path = FilePaths.TRAINED_MODEL.value
+            # To change the model path, please refer to the class FilePaths in the
+            # file src/utils/utils.py
+            model_path = FilePaths.TRAINED_MODEL.value
 
-                # Tau defines the strength of the constraint on the goal achievement
-                taus = [0.3, 0.5, 0.8]
-                # BETAs defines the number of actions to perform
-                # Beta for the community hiding task defines the percentage of rewiring
-                # action, add or remove edges
-                community_betas = [1, 3, 5, 10]
-                # Beta for the node hiding task is a multiplier of mean degree of the
-                # the graph
-                node_betas = [0.5, 1, 2]
+            # Tau defines the strength of the constraint on the goal achievement
+            #taus = [0.3, 0.5, 0.8]
+            taus = [0.5]
+            # BETAs defines the number of actions to perform
+            # Beta for the community hiding task defines the percentage of rewiring
+            # action, add or remove edges
+            #community_betas = [1, 3, 5, 10]
+            # Beta for the node hiding task is a multiplier of mean degree of the
+            # the graph
+            #node_betas = [0.5, 1, 2]
+            node_betas = [1]
 
-                # Initialize the test class
-                node_hiding = NodeHiding(agent=agent, model_path=model_path)
-                community_hiding = CommunityHiding(agent=agent, model_path=model_path)
+            # Initialize the test class
+            node_hiding = NodeHiding(agent=agent, model_path=model_path)
+            #community_hiding = CommunityHiding(agent=agent, model_path=model_path)
 
-                print("* NOTE:")
-                print(
-                    "*    - Beta for Node Hiding is a multiplier of the mean degree of the graph"
-                )
-                print(
-                    "*    - Beta for Community Hiding is the percentage of rewiring action, add or remove edges"
-                )
-                for tau in taus:
-                    print("* Node Hiding with tau = {}".format(tau))
-                    for beta in node_betas:
-                        print("* * Beta Node = {}".format(beta))
-                        node_hiding.set_parameters(beta=beta, tau=tau)
-                        node_hiding.run_experiment()
+            print("* NOTE:")
+            print(
+                "*    - Beta for Node Hiding is a multiplier of the mean degree of the graph"
+            )
+            #print(
+                #"*    - Beta for Community Hiding is the percentage of rewiring action, add or remove edges"
+            #)
+            for tau in taus:
+                print("* Node Hiding with tau = {}".format(tau))
+                for beta in node_betas:
+                    print("* * Beta Node = {}".format(beta))
+                    node_hiding.set_parameters(beta=beta, tau=tau)
+                    node_hiding.run_experiment()
 
-                # print("* Community Hiding")  #  with tau = {}".format(tau))
-                # for beta in community_betas:
-                #     print("* * Beta Community = {}".format(beta))
-                #     community_hiding.set_parameters(beta=beta, tau=0.3)
-                #     community_hiding.run_experiment()
-                # print("* " * 50)
-            else:
-                raise ValueError(
-                    "Invalid mode. Please choose between 'train' and 'test'"
-                )
+            # print("* Community Hiding")  #  with tau = {}".format(tau))
+            # for beta in community_betas:
+            #     print("* * Beta Community = {}".format(beta))
+            #     community_hiding.set_parameters(beta=beta, tau=0.3)
+            #     community_hiding.run_experiment()
+            # print("* " * 50)
+        #else:
+            #raise ValueError(
+                #"Invalid mode. Please choose between 'train' and 'test'"
+            #)
