@@ -1,6 +1,6 @@
 """Module for the GraphEnviroment class"""
 from src.community_algs.detection_algs import CommunityDetectionAlgorithm
-from src.utils.utils import HyperParams, SimilarityFunctionsNames, Utils
+from src.utils.utils import HyperParams, editable_HyperParams, SimilarityFunctionsNames, Utils
 from src.community_algs.metrics.similarity import CommunitySimilarity, GraphSimilarity
 from typing import List, Tuple, Callable
 
@@ -19,8 +19,8 @@ class GraphEnvironment(object):
 
     def __init__(
         self,
-        graph_path: str = HyperParams.GRAPH_NAME.value,
-        community_detection_algorithm: str = HyperParams.DETECTION_ALG_NAME.value,
+        graph_path: str = editable_HyperParams.GRAPH_NAME,
+        community_detection_algorithm: str = editable_HyperParams.DETECTION_ALG_NAME,
         beta: float = HyperParams.BETA.value,
         tau: float = HyperParams.TAU.value,
         community_similarity_function: str = SimilarityFunctionsNames.SOR.value,

@@ -195,6 +195,7 @@ class NodeHiding:
                 )
                 self.run_alg(self.run_agent)
 
+                """
                 # ° ------   Baselines   ------ ° #
                 # Random Rewiring
                 steps.set_description(
@@ -222,6 +223,7 @@ class NodeHiding:
                     f"* * * Testing Episode {step+1} | Greedy Rewiring"
                 )
                 self.run_alg(self.run_greedy)
+                """
 
         Utils.check_dir(self.path_to_save)
         Utils.save_test(
@@ -472,7 +474,7 @@ class NodeHiding:
                 "community_len": [],
             }
 
-        # Add environment parameters to the log dictionaryù
+        # Add environment parameters to the log dictionary
         self.log_dict["env"] = dict()
         self.log_dict["env"]["dataset"] = self.env_name
         self.log_dict["env"]["detection_alg"] = self.detection_alg
@@ -491,7 +493,7 @@ class NodeHiding:
 
     def save_metrics(
         self, alg: str, goal: int, nmi: float, time: float, steps: int
-    ) -> dict:
+    ) -> dict: 
         """Save the metrics of the algorithm in the log dictionary"""
         self.log_dict[alg]["goal"].append(goal)
         self.log_dict[alg]["nmi"].append(nmi)

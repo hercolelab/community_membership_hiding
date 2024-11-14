@@ -73,14 +73,16 @@ class SimilarityFunctionsNames(Enum):
     JAC_1 = "jaccard_1"
     JAC_2 = "jaccard_2"
 
+class editable_HyperParams:
+    # ! REAL GRAPH Graph path (change the following line to change the graph)
+    GRAPH_NAME = FilePaths.KAR.value
+    # ! Define the detection algorithm to use (change the following line to change the algorithm)
+    DETECTION_ALG_NAME = DetectionAlgorithmsNames.GRE.value
+
 
 class HyperParams(Enum):
     """Hyperparameters for the Environment"""
 
-    # ! REAL GRAPH Graph path (change the following line to change the graph)
-    GRAPH_NAME = FilePaths.WORDS.value
-    # ! Define the detection algorithm to use (change the following line to change the algorithm)
-    DETECTION_ALG_NAME = DetectionAlgorithmsNames.GRE.value
     # Multiplier for the rewiring action number, i.e. (mean_degree * BETA)
     BETA = 1
     # ! Strength of the deception constraint, value between 0 (hard) and 1 (soft)
@@ -484,6 +486,7 @@ class Utils:
         with open(file_name, "w", encoding="utf-8") as f:
             json.dump(log, f, indent=4)
 
+        """
         for metric in metrics:
             # Create a DataFrame with the mean values of each algorithm for the metric
             df = pd.DataFrame(
@@ -515,3 +518,4 @@ class Utils:
                 plt.ylabel(metric.capitalize())
             plt.savefig(f"{files_path}/{log_name}_{metric}.png")
             plt.clf()
+        """
