@@ -1,6 +1,7 @@
 from enum import Enum
 from typing import List, Tuple
 from statistics import mean
+import statistics as stat
 
 # from src.environment.graph_env import GraphEnvironment
 
@@ -519,3 +520,119 @@ class Utils:
             plt.savefig(f"{files_path}/{log_name}_{metric}.png")
             plt.clf()
         """
+
+def create_metrics_structure():
+    """Create structure with mean and standard deviation"""
+    return {"mean": 0, "std": 0}
+
+def calculate_stats(data_list):
+    """Compute mean and standard deviation of a list"""
+    if len(data_list) > 1:
+        return {"mean": stat.mean(data_list), "std": stat.stdev(data_list)}
+    else:
+        return {"mean": stat.mean(data_list), "std": 0}
+
+
+def extrapolate_metrics(
+        results_path,
+        metrics_path,
+        datasets: list,
+        algorithms: list,
+        taus: list,
+        betas: list
+    ):
+
+    with open(results_path, 'r') as file:
+        results = json.load(file)
+
+    metrics = {
+        dataset : dict() for dataset in datasets
+    }
+
+    for dataset in datasets:
+
+        for alg in algorithms:
+            metrics[dataset][alg] = dict()
+
+            for tau in taus:
+                metrics[dataset][alg][f"tau {tau}"] = dict()
+
+                for beta in betas:
+                    metrics[dataset][alg][f"tau {tau}"][f"beta {beta}"] = {
+                            "sr": create_metrics_structure(),
+                            "nmi": create_metrics_structure(),
+                            "f1": create_metrics_structure(),
+                            "evading_time": create_metrics_structure(),
+                            "training_time": create_metrics_structure
+                    }
+
+                    sr_list = results[dataset][alg][f"tau {tau}"][f"beta {beta}"]["sr"]
+                    nmi_list = results[dataset][alg][f"tau {tau}"][f"beta {beta}"]["nmi"]
+                    f1_list = results[dataset][alg][f"tau {tau}"][f"beta {beta}"]["f1"]
+                    time_list = results[dataset][alg][f"tau {tau}"][f"beta {beta}"]["evading_time"]
+                    train_time_list = results[dataset][alg][f"tau {tau}"][f"beta {beta}"]["training_time"]
+
+                    metrics[dataset][alg][f"tau {tau}"][f"beta {beta}"]["sr"] = calculate_stats(sr_list)
+                    metrics[dataset][alg][f"tau {tau}"][f"beta {beta}"]["nmi"] = calculate_stats(nmi_list)
+                    metrics[dataset][alg][f"tau {tau}"][f"beta {beta}"]["f1"] = calculate_stats(f1_list)
+                    metrics[dataset][alg][f"tau {tau}"][f"beta {beta}"]["evading_time"] = calculate_stats(time_list)
+                    metrics[dataset][alg][f"tau {tau}"][f"beta {beta}"]["training_time"] = calculate_stats(train_time_list)
+
+    
+    with open(metrics_path, 'w') as file:
+        json.dump(metrics, file, indent=4)
+
+    return
+
+
+def json_to_md_tables(file_path, output_folder):
+
+    metric_names = {
+        "sr": "Success rate",
+        "nmi": "NMI score",
+        "f1": "F1 score",
+        "evading_time": "Evading time",
+        "training_time": "Training time"
+    }
+
+    dataset_names = {
+        "dataset/data/kar.gml": "karate"
+    }
+
+    with open(file_path, 'r', encoding ='utf-8') as f:
+        data = json.load(f)
+
+
+    for dataset, methods_data in data.items():
+        for method, tau_data in methods_data.items():
+            for tau, beta_data in tau_data.items():
+                for tau, beta_data in tau_data.items():
+                    tau_folder = os.path.join(output_folder, dataset_names[dataset], method, tau)
+                    os.makedirs(tau_folder, exist_ok=True)
+
+                    metric_list = list(metric_names.values())
+
+                    headers = ["Beta"] + metric_list
+                    md_table = ["| " + " | ".join(headers) + " |"]
+                    md_table.append("|" + "|".join(["---"] * len(headers)) + "|")
+
+                    for beta, metrics in beta_data.items():
+                        beta_label = f"\\beta = {beta.split()[-1]}"
+                        row = [beta_label]
+
+                        for metric_key in metric_names.keys():
+                            if metric_key in metrics:
+                                values = metrics[metric_key]
+                                mean_std = f"{values['mean']:.6f} ± {values['std']:.6f}"
+                                row.append(mean_std)
+                            else:
+                                row.append("") 
+
+                        md_table.append("| " + " | ".join(row) + " |")
+
+                    output_file = os.path.join(tau_folder, "table.md")
+                    with open(output_file, 'w', encoding='utf-8') as f:
+                        f.write("\n".join(md_table))
+
+    
+    return

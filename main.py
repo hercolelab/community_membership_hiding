@@ -5,6 +5,11 @@ from src.agent.agent import Agent
 from src.utils.hiding_node import NodeHiding
 from src.utils.hiding_community import CommunityHiding
 
+from src.utils.utils import (
+    extrapolate_metrics,
+    json_to_md_tables
+)
+
 import argparse
 import math
 import time
@@ -32,7 +37,7 @@ if __name__ == "__main__":
 
     datasets = [
         FilePaths.KAR.value,
-        FilePaths.WORDS.value,
+        #FilePaths.WORDS.value,
         #FilePaths.VOTE.value,
         #FilePaths.NETS.value,
         #FilePaths.POW.value,
@@ -42,14 +47,14 @@ if __name__ == "__main__":
     detection_algs = [
         DetectionAlgorithmsNames.GRE.value,
         DetectionAlgorithmsNames.LOUV.value,
-        #DetectionAlgorithmsNames.WALK.value,
+        DetectionAlgorithmsNames.WALK.value,
     ]
 
     results = {
         dataset : dict() for dataset in datasets
     }
 
-    n_experiments = 2
+    n_experiments = 10
 
     for dataset in datasets:
         editable_HyperParams.GRAPH_NAME = dataset
@@ -128,8 +133,9 @@ if __name__ == "__main__":
                             results[dataset][alg][f"tau {tau}"][f"beta {beta}"] = {
                                 "sr": list(),
                                 "nmi": list(),
-                                "training_time": list(),
-                                "evading_time": list()
+                                "f1": list(),
+                                "evading_time": list(),
+                                "training_time": list()
                             }
                         print("* * Beta Node = {}".format(beta))
                         node_hiding.set_parameters(beta=beta, tau=tau)
@@ -145,11 +151,18 @@ if __name__ == "__main__":
                         success_rate = sum(success_var)/len(success_var)
                         avg_evading_time = np.mean(time_var)
                         avg_nmi = np.mean(nmi_var)
+                        f1 = (2*success_rate*avg_nmi)/(success_rate+avg_nmi)
 
                         results[dataset][alg][f"tau {tau}"][f"beta {beta}"]["sr"].append(success_rate)
                         results[dataset][alg][f"tau {tau}"][f"beta {beta}"]["nmi"].append(avg_nmi)
+                        results[dataset][alg][f"tau {tau}"][f"beta {beta}"]["f1"].append(f1)
                         results[dataset][alg][f"tau {tau}"][f"beta {beta}"]["evading_time"].append(avg_evading_time)
                         results[dataset][alg][f"tau {tau}"][f"beta {beta}"]["training_time"].append(train_time)
 
-                        with open(FilePaths.TEST_DIR.value + 'results.json', 'w') as file:
-                            json.dump(results, file, indent=4)
+    with open(FilePaths.TEST_DIR.value + 'results.json', 'w') as file:
+        json.dump(results, file, indent=4)
+
+    metrics_path = FilePaths.TEST_DIR.value + 'metrics.json'
+
+    extrapolate_metrics(FilePaths.TEST_DIR.value + 'results.json',metrics_path,datasets,detection_algs,taus,node_betas)
+    json_to_md_tables(metrics_path,"test/")
