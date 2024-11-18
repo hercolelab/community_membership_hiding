@@ -37,7 +37,7 @@ if __name__ == "__main__":
 
     datasets = [
         FilePaths.KAR.value,
-        #FilePaths.WORDS.value,
+        FilePaths.WORDS.value,
         #FilePaths.VOTE.value,
         #FilePaths.NETS.value,
         #FilePaths.POW.value,
@@ -54,7 +54,7 @@ if __name__ == "__main__":
         dataset : dict() for dataset in datasets
     }
 
-    n_experiments = 10
+    n_experiments = 100
 
     for dataset in datasets:
         editable_HyperParams.GRAPH_NAME = dataset

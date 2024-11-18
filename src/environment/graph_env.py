@@ -195,7 +195,10 @@ class GraphEnvironment(object):
         """
         Choose a new community target randomly
         """
-        old_community = self.community_target.copy()
+        if self.community_target is not None:
+            old_community = self.community_target.copy()
+        else:
+            old_community = None
         done = False
         while not done:
             random.seed(time.time())

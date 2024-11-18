@@ -179,7 +179,7 @@ class NodeHiding:
             # Change the target community
             self.reset_experiment()
 
-            sizes.set_description(f"* * * Community Size {len(self.community_target)}")
+            #sizes.set_description(f"* * * Community Size {len(self.community_target)}")
             steps = trange(self.eval_steps, desc="Testing Episode", leave=False)
             for step in steps:
                 # print("* Node Target:", self.node_target)
@@ -187,7 +187,7 @@ class NodeHiding:
                 # print("* Edge Budget:", self.edge_budget)
 
                 # Change target node within the community
-                self.reset_experiment(target_community=False)
+                self.reset_experiment(target_community=True)
 
                 # ° ------ Agent Rewiring ------ ° #
                 steps.set_description(

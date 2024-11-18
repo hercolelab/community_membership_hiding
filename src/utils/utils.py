@@ -105,7 +105,7 @@ class HyperParams(Enum):
     #       length of the communities.
     # - 3: choose a community based on the distribution of the number of
     #       nodes in the communities
-    COMMUNITY_CHANGE_METHOD = 2
+    COMMUNITY_CHANGE_METHOD = 1
 
     PREFERRED_COMMUNITY_SIZE = [0.2, 0.5, 0.8]
 
