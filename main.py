@@ -37,7 +37,7 @@ if __name__ == "__main__":
 
     datasets = [
         FilePaths.KAR.value,
-        FilePaths.WORDS.value,
+        #FilePaths.WORDS.value,
         #FilePaths.VOTE.value,
         #FilePaths.NETS.value,
         #FilePaths.POW.value,
@@ -46,8 +46,8 @@ if __name__ == "__main__":
     ]
     detection_algs = [
         DetectionAlgorithmsNames.GRE.value,
-        DetectionAlgorithmsNames.LOUV.value,
-        DetectionAlgorithmsNames.WALK.value,
+        #DetectionAlgorithmsNames.LOUV.value,
+        #DetectionAlgorithmsNames.WALK.value,
     ]
 
     results = {
@@ -68,19 +68,20 @@ if __name__ == "__main__":
 
         for e in range(n_experiments):
             print(f"******************** Experiment {e+1} ********************")
-            print("******************** Training ********************")
-            print("Dataset: {} - Detection Algorithm: {}".format(dataset, DetectionAlgorithmsNames.GRE.value))
-            # training always with greedy
-            agent.env.set_communities(DetectionAlgorithmsNames.GRE.value)
 
             # ° ------    TRAIN    ------ ° #
             #if args.mode == "train" or args.mode == "both":
-            start_train_time = time.time()
-            # Training
-            agent.grid_search()
-            end_train_time = time.time()
-            train_time = end_train_time - start_train_time
-            print(f"* Agent training time: {train_time}")
+            if e == 0: # train just once
+                print("******************** Training ********************")
+                print("Dataset: {} - Detection Algorithm: {}".format(dataset, DetectionAlgorithmsNames.GRE.value))
+                # training always with greedy
+                agent.env.set_communities(DetectionAlgorithmsNames.GRE.value)
+                start_train_time = time.time()
+                # Training
+                agent.grid_search()
+                end_train_time = time.time()
+                train_time = end_train_time - start_train_time
+                print(f"* Agent training time: {train_time}")
 
             for alg in detection_algs:
                 editable_HyperParams.DETECTION_ALG_NAME = alg
