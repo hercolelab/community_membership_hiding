@@ -36,8 +36,8 @@ if __name__ == "__main__":
     args = get_args()
 
     datasets = [
-        FilePaths.KAR.value,
-        #FilePaths.WORDS.value,
+        #FilePaths.KAR.value,
+        FilePaths.WORDS.value,
         #FilePaths.VOTE.value,
         #FilePaths.NETS.value,
         #FilePaths.POW.value,

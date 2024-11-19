@@ -596,7 +596,8 @@ def json_to_md_tables(file_path, output_folder):
     }
 
     dataset_names = {
-        "dataset/data/kar.gml": "karate"
+        "dataset/data/kar.gml": "karate",
+        "dataset/data/words.mtx" : "words"
     }
 
     with open(file_path, 'r', encoding ='utf-8') as f:
@@ -617,7 +618,7 @@ def json_to_md_tables(file_path, output_folder):
                     md_table.append("|" + "|".join(["---"] * len(headers)) + "|")
 
                     for beta, metrics in beta_data.items():
-                        beta_label = f"\\beta = {beta.split()[-1]}"
+                        beta_label = f"beta = {beta.split()[-1]}"
                         row = [beta_label]
 
                         for metric_key in metric_names.keys():
