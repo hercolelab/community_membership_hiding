@@ -45,8 +45,8 @@ if __name__ == "__main__":
         #FilePaths.ASTR.value,
     ]
     detection_algs = [
-        DetectionAlgorithmsNames.GRE.value,
-        #DetectionAlgorithmsNames.LOUV.value,
+        #DetectionAlgorithmsNames.GRE.value,
+        DetectionAlgorithmsNames.LOUV.value,
         #DetectionAlgorithmsNames.WALK.value,
     ]
 
