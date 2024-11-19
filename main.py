@@ -46,8 +46,8 @@ if __name__ == "__main__":
     ]
     detection_algs = [
         #DetectionAlgorithmsNames.GRE.value,
-        DetectionAlgorithmsNames.LOUV.value,
-        #DetectionAlgorithmsNames.WALK.value,
+        #DetectionAlgorithmsNames.LOUV.value,
+        DetectionAlgorithmsNames.WALK.value,
     ]
 
     results = {
