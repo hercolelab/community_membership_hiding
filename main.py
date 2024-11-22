@@ -36,8 +36,8 @@ if __name__ == "__main__":
     args = get_args()
 
     datasets = [
-        #FilePaths.KAR.value,
-        FilePaths.WORDS.value,
+        FilePaths.KAR.value,
+        #FilePaths.WORDS.value,
         #FilePaths.VOTE.value,
         #FilePaths.NETS.value,
         #FilePaths.POW.value,
@@ -85,13 +85,14 @@ if __name__ == "__main__":
 
             for alg in detection_algs:
                 editable_HyperParams.DETECTION_ALG_NAME = alg
+                agent.env.set_communities(alg)
                 if alg not in results[dataset]:
                     results[dataset][alg] = dict()
 
                 # ° ------    TEST    ------ ° #
                 #elif args.mode == "test" or args.mode == "both":
                 # To change the detection algorithm, or the dataset, on which the model
-                # will be tested, please refer to the class HyperParams in the file
+                # will be tested, please refer to the class editableHyperParams in the file
                 # src/utils/utils.py, changing the values of the variables:
                 # - GRAPH_NAME, for the dataset
                 # - DETECTION_ALG, for the detection algorithm

@@ -597,7 +597,8 @@ def json_to_md_tables(file_path, output_folder):
 
     dataset_names = {
         "dataset/data/kar.gml": "karate",
-        "dataset/data/words.mtx" : "words"
+        "dataset/data/words.mtx" : "words",
+        "dataset/data/vote.mtx" : "vote"
     }
 
     with open(file_path, 'r', encoding ='utf-8') as f:

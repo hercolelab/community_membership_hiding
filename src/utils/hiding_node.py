@@ -1,5 +1,5 @@
 from re import S
-from src.utils.utils import HyperParams, Utils, FilePaths
+from src.utils.utils import editable_HyperParams,HyperParams, Utils, FilePaths
 from src.environment.graph_env import GraphEnvironment
 from src.agent.agent import Agent
 
@@ -170,7 +170,7 @@ class NodeHiding:
         else:
             preferred_size_list = [self.agent.env.preferred_community_size]
         sizes = trange(
-            len(preferred_size_list), desc="* * * Community Size", leave=True
+            len(preferred_size_list),  leave=True
         )
         for i in sizes:
             # Change the community size at each episode
