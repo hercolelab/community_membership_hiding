@@ -45,8 +45,8 @@ if __name__ == "__main__":
         #FilePaths.ASTR.value,
     ]
     detection_algs = [
-        #DetectionAlgorithmsNames.GRE.value,
-        #DetectionAlgorithmsNames.LOUV.value,
+        DetectionAlgorithmsNames.GRE.value,
+        DetectionAlgorithmsNames.LOUV.value,
         DetectionAlgorithmsNames.WALK.value,
     ]
 
@@ -73,9 +73,10 @@ if __name__ == "__main__":
             #if args.mode == "train" or args.mode == "both":
             if e == 0: # train just once
                 print("******************** Training ********************")
-                print("Dataset: {} - Detection Algorithm: {}".format(dataset, DetectionAlgorithmsNames.GRE.value))
-                # training always with greedy
-                agent.env.set_communities(DetectionAlgorithmsNames.GRE.value)
+                # training with one algorithm 
+                train_alg = DetectionAlgorithmsNames.LOUV.value
+                print("Dataset: {} - Detection Algorithm: {}".format(dataset, train_alg))
+                agent.env.set_communities(train_alg)
                 start_train_time = time.time()
                 # Training
                 agent.grid_search()
@@ -167,4 +168,4 @@ if __name__ == "__main__":
     metrics_path = FilePaths.TEST_DIR.value + 'metrics.json'
 
     extrapolate_metrics(FilePaths.TEST_DIR.value + 'results.json',metrics_path,datasets,detection_algs,taus,node_betas)
-    json_to_md_tables(metrics_path,"test/")
+    json_to_md_tables(metrics_path,"test/",train_alg)

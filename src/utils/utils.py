@@ -585,7 +585,7 @@ def extrapolate_metrics(
     return
 
 
-def json_to_md_tables(file_path, output_folder):
+def json_to_md_tables(file_path, output_folder,train_alg):
 
     metric_names = {
         "sr": "Success rate",
@@ -609,7 +609,7 @@ def json_to_md_tables(file_path, output_folder):
         for method, tau_data in methods_data.items():
             for tau, beta_data in tau_data.items():
                 for tau, beta_data in tau_data.items():
-                    tau_folder = os.path.join(output_folder, dataset_names[dataset], method, tau)
+                    tau_folder = os.path.join(output_folder, dataset_names[dataset], train_alg+'-'+method, tau)
                     os.makedirs(tau_folder, exist_ok=True)
 
                     metric_list = list(metric_names.values())
