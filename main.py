@@ -74,7 +74,7 @@ if __name__ == "__main__":
             if e == 0: # train just once
                 print("******************** Training ********************")
                 # training with one algorithm 
-                train_alg = DetectionAlgorithmsNames.LOUV.value
+                train_alg = DetectionAlgorithmsNames.WALK.value
                 print("Dataset: {} - Detection Algorithm: {}".format(dataset, train_alg))
                 agent.env.set_communities(train_alg)
                 start_train_time = time.time()
