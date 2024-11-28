@@ -223,7 +223,7 @@ class Agent:
     ############################################################################
     #                            GRID SEARCH                                   #
     ############################################################################
-    def grid_search(self) -> None:
+    def grid_search(self, dataset, alg) -> None:
         """Perform grid search on the hyperparameters"""
         # Iterate over all the possible combinations of hyperparameters
         for lr, gamma, lambda_metric, alpha_metric, epsilon_prob in product(
@@ -238,7 +238,7 @@ class Agent:
                         # Configure optimizers with the current learning rate
                         self.configure_optimizers()
                         # Training
-                        log = self.training()
+                        log = self.training(dataset,alg)
                         # Save results in correct folder
                         self.save_plots(log, self.get_path())
                         # Free memory
@@ -247,7 +247,7 @@ class Agent:
     ############################################################################
     #                               TRAINING                                   #
     ############################################################################
-    def training(self) -> dict:
+    def training(self, dataset, alg) -> dict:
         """
         Train the agent on the environment, change the target node every 10
         episodes and the target community every 100 episodes. The episode ends
@@ -292,7 +292,7 @@ class Agent:
             self.a_loss, self.v_loss = self.training_step()
             # Checkpoint best performing model
             if self.episode_reward / self.step >= self.best_reward:
-                self.save_checkpoint()
+                self.save_checkpoint(dataset,alg)
                 self.best_reward = self.episode_reward
 
             # ° Log
@@ -512,7 +512,7 @@ class Agent:
             self.env.detection_alg,
             file_path)
 
-    def save_checkpoint(self):
+    def save_checkpoint(self,dataset,alg):
         """Save checkpoint"""
         log_dir = self.get_path()
         # Check if the directory exists, otherwise create it
@@ -523,6 +523,9 @@ class Agent:
             checkpoint[key] = value.state_dict()
         path = f'{log_dir}/model.pth'
         torch.save(checkpoint, path)
+        models_dir = "src/models/"
+        model_path = models_dir+"steps-10000_"+dataset+"_"+alg+"_model.pth"
+        torch.save(checkpoint, model_path)
 
     def load_checkpoint(self, path=None):
         """Load checkpoint"""

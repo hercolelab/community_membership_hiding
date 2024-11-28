@@ -195,7 +195,6 @@ class NodeHiding:
                 )
                 self.run_alg(self.run_agent)
 
-                """
                 # ° ------   Baselines   ------ ° #
                 # Random Rewiring
                 steps.set_description(
@@ -223,7 +222,6 @@ class NodeHiding:
                     f"* * * Testing Episode {step+1} | Greedy Rewiring"
                 )
                 self.run_alg(self.run_greedy)
-                """
 
         Utils.check_dir(self.path_to_save)
         Utils.save_test(
@@ -247,9 +245,6 @@ class NodeHiding:
         start = time.time()
         alg_name, new_communities, step = function()
         end = time.time() - start
-
-        if function == self.run_agent:
-            self.agent_test_time += end
 
         # Compute NMI
         nmi = self.get_nmi(self.community_structure, new_communities)
