@@ -29,7 +29,7 @@ class RoamHiding:
         self.edge_budget = edge_budget
         self.detection_alg = CommunityDetectionAlgorithm(detection_alg)
 
-    def roam_heuristic(self, budget: int) -> tuple:
+    def roam_heuristic(self, budget: int, seed) -> tuple:
         """
         The ROAM heuristic given a budget b:
             - Step 1: Remove the link between the source node, v, and its
@@ -49,6 +49,7 @@ class RoamHiding:
         target_node_neighbours = list(graph.neighbors(self.target_node))
         if len(target_node_neighbours) == 0:
             print("No neighbours for the target node", self.target_node)
+            Utils.fix_randomness(seed)
             return graph, self.detection_alg.compute_community(graph)
 
         # Choose v0 as the neighbour of target_node with the most connections
@@ -82,5 +83,6 @@ class RoamHiding:
             graph.add_edge(v0, v0_neighbour)
             v_neighbours_not_v0.remove(v0_neighbour)
 
+        Utils.fix_randomness(seed)
         new_community_structure = self.detection_alg.compute_community(graph)
         return graph, new_community_structure

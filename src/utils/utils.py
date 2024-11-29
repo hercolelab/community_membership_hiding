@@ -14,6 +14,8 @@ import seaborn as sns
 import scipy
 import json
 import os
+import torch
+import random
 
 class editable_FilePaths:
     TRAINED_MODEL = "src/models/steps-10000_words-greedy_model.pth"
@@ -518,13 +520,34 @@ class Utils:
             plt.savefig(f"{files_path}/{log_name}_{metric}.png")
             plt.clf()
 
-def create_metrics_structure():
-    """Create structure with mean and standard deviation"""
-    return {"mean": 0, "std": 0}
+    @staticmethod
+    def create_metrics_structure():
+        """Create structure with mean and standard deviation"""
+        return {"mean": 0, "std": 0}
 
-def calculate_stats(data_list):
-    """Compute mean and standard deviation of a list"""
-    if len(data_list) > 1:
-        return {"mean": stat.mean(data_list), "std": stat.stdev(data_list)}
-    else:
-        return {"mean": stat.mean(data_list), "std": 0}
+    @staticmethod
+    def calculate_stats(data_list):
+        """Compute mean and standard deviation of a list"""
+        if len(data_list) > 1:
+            return {"mean": stat.mean(data_list), "std": stat.stdev(data_list)}
+        else:
+            return {"mean": stat.mean(data_list), "std": 0}
+        
+    @staticmethod
+    def fix_randomness(seed):
+        """
+        Fix the randomness.
+        
+        Parameters
+        ----------
+        seed
+            The seed.
+        """
+        torch.manual_seed(seed)
+        torch.cuda.manual_seed(seed)
+        torch.cuda.manual_seed_all(seed)
+        torch.backends.cudnn.deterministic = True
+        torch.backends.cudnn.benchmark = False
+        random.seed(seed)
+        np.random.seed(int(seed))
+        return

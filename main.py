@@ -50,14 +50,16 @@ if __name__ == "__main__":
     }
     detection_algs = [
         DetectionAlgorithmsNames.GRE.value,
-        DetectionAlgorithmsNames.LOUV.value,
-        DetectionAlgorithmsNames.WALK.value,
+        #DetectionAlgorithmsNames.LOUV.value,
+        #DetectionAlgorithmsNames.WALK.value,
     ]
+
+    seed = int(time.time())
 
     for dataset in datasets:
         editable_HyperParams.GRAPH_NAME = dataset
         # ° --- Environment Setup --- ° #
-        env = GraphEnvironment(graph_path=dataset)
+        env = GraphEnvironment(seed=seed, graph_path=dataset)
 
         # ° ------  Agent Setup ----- ° #
         agent = Agent(env=env)
@@ -94,8 +96,8 @@ if __name__ == "__main__":
                 agent.env.set_communities(alg)
 
                 # Tau defines the strength of the constraint on the goal achievement
-                taus = [0.3, 0.5, 0.8]
-                #taus = [0.5]
+                #taus = [0.3, 0.5, 0.8]
+                taus = [0.5]
                 # BETAs defines the number of actions to perform
                 # Beta for the node hiding task is a multiplier of mean degree of the
                 # the graph

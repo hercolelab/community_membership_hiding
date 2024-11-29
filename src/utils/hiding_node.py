@@ -278,6 +278,7 @@ class NodeHiding:
         )
 
         # Compute the new community structure
+        Utils.fix_randomness(self.agent.env.seed)
         self.agent.env.new_community_structure = (
             self.agent.env.detection.compute_community(new_graph)
         )
@@ -304,7 +305,7 @@ class NodeHiding:
             rh_graph,
             rh_communities,
             steps,
-        ) = self.random_hiding.hide_target_node_from_community()
+        ) = self.random_hiding.hide_target_node_from_community(self.agent.env.seed)
         return "Random", rh_communities, steps
 
     def run_degree(self) -> Tuple[str, cdlib.NodeClustering, int]:
@@ -320,7 +321,7 @@ class NodeHiding:
             dh_graph,
             dh_communities,
             steps,
-        ) = self.degree_hiding.hide_target_node_from_community()
+        ) = self.degree_hiding.hide_target_node_from_community(self.agent.env.seed)
         return "Degree", dh_communities, steps
 
     def run_roam(self) -> Tuple[str, cdlib.NodeClustering, int]:
@@ -332,7 +333,7 @@ class NodeHiding:
         Tuple[str, cdlib.NodeClustering, int]:
             Algorithm name, Set of new communities, steps
         """
-        ro_graph, ro_communities = self.roam_hiding.roam_heuristic(self.edge_budget)
+        ro_graph, ro_communities = self.roam_hiding.roam_heuristic(self.edge_budget, self.agent.env.seed)
         return "Roam", ro_communities, self.edge_budget
 
     def run_centrality(self) -> Tuple[str, cdlib.NodeClustering, int]:
@@ -348,7 +349,7 @@ class NodeHiding:
             ch_graph,
             ch_communities,
             steps,
-        ) = self.centrality_hiding.hide_target_node_from_community()
+        ) = self.centrality_hiding.hide_target_node_from_community(self.agent.env.seed)
         return "Centrality", ch_communities, steps
 
     def run_greedy(self) -> Tuple[str, cdlib.NodeClustering, int]:
@@ -364,7 +365,7 @@ class NodeHiding:
             gh_graph,
             gh_communities,
             steps,
-        ) = self.greedy_hiding.hide_target_node_from_community()
+        ) = self.greedy_hiding.hide_target_node_from_community(self.agent.env.seed)
         return "Greedy", gh_communities, steps
 
     ############################################################################

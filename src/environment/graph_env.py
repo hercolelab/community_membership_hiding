@@ -19,6 +19,7 @@ class GraphEnvironment(object):
 
     def __init__(
         self,
+        seed: int = int(time.time()),
         graph_path: str = editable_HyperParams.GRAPH_NAME,
         community_detection_algorithm: str = editable_HyperParams.DETECTION_ALG_NAME,
         beta: float = HyperParams.BETA.value,
@@ -46,7 +47,8 @@ class GraphEnvironment(object):
             Name of the graph similarity function to use, by default
             SimilarityFunctionsNames.JAC_1.value
         """
-        random.seed(time.time())
+        #random.seed(time.time())
+        self.seed = seed
         self.device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
         # ° ---- GRAPH ---- ° #
@@ -299,6 +301,7 @@ class GraphEnvironment(object):
 
         # ° ---- COMMUNITY DETECTION ---- ° #
         # Compute the community structure of the graph after the action
+        Utils.fix_randomness(self.seed)
         self.new_community_structure = self.detection.compute_community(self.graph)
 
         # ° ---- REWARD ---- ° #
@@ -385,6 +388,7 @@ class GraphEnvironment(object):
         if budget_consumed == -1:
             # ° ---- COMMUNITY DETECTION ---- ° #
             # Compute the community structure of the graph after the action
+            Utils.fix_randomness(self.seed)
             self.new_community_structure = self.detection.compute_community(self.graph)
             # Check if the target node still belongs to the community
             new_community_target = next(
@@ -504,6 +508,7 @@ class GraphEnvironment(object):
         self.old_penalty_value = 0
         # Compute the community structure of the graph, before the action,
         # i.e. before the deception
+        Utils.fix_randomness(self.seed)
         self.original_community_structure = self.detection.compute_community(self.graph)
         # ! It is a NodeClustering object
         self.old_community_structure = self.original_community_structure

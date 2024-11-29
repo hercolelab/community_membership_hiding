@@ -42,7 +42,7 @@ class RandomHiding():
 
         return possible_actions
     
-    def hide_target_node_from_community(self) -> Tuple[nx.Graph, List[int], int]:
+    def hide_target_node_from_community(self, seed) -> Tuple[nx.Graph, List[int], int]:
         """
         Hide the target node from the target community by rewiring its edges, 
         choosing randomly between adding or removing an edge.
@@ -86,6 +86,7 @@ class RandomHiding():
             steps -= 1
         # TEST, compute the new community structure only at the end of the episode
         # Compute the new community structure
+        Utils.fix_randomness(seed)
         communities = self.detection_alg.compute_community(graph)
         step = self.steps - steps
         return graph, communities, step
