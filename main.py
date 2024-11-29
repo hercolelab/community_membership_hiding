@@ -31,8 +31,8 @@ if __name__ == "__main__":
     args = get_args()
 
     datasets = [
-        FilePaths.KAR.value,
-        #FilePaths.WORDS.value,
+        #FilePaths.KAR.value,
+        FilePaths.WORDS.value,
         #FilePaths.VOTE.value,
         #FilePaths.NETS.value,
         #FilePaths.POW.value,
@@ -41,7 +41,7 @@ if __name__ == "__main__":
     ]
     datasets_names = {
         FilePaths.KAR.value: "karate",
-        FilePaths.WORDS.value: "Words",
+        FilePaths.WORDS.value: "words",
         FilePaths.VOTE.value: "vote",
         FilePaths.NETS.value: "nets",
         FilePaths.POW.value: "pow",
@@ -90,7 +90,7 @@ if __name__ == "__main__":
             # file src/utils/utils.py
             editable_FilePaths.TRAINED_MODEL = "src/models/steps-10000_"+datasets_names[dataset]+"_"+train_alg+"_model.pth"
             model_path = editable_FilePaths.TRAINED_MODEL
-
+    
             for alg in detection_algs:
                 editable_HyperParams.DETECTION_ALG_NAME = alg
                 agent.env.set_communities(alg)

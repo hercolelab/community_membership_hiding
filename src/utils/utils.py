@@ -16,6 +16,7 @@ import json
 import os
 import torch
 import random
+import math
 
 class editable_FilePaths:
     TRAINED_MODEL = "src/models/steps-10000_words-greedy_model.pth"
@@ -28,6 +29,8 @@ class FilePaths(Enum):
     DATASETS_DIR = "dataset/data"
     LOG_DIR = "src/logs/"
     TEST_DIR = "test/"
+
+    TRAINED_MODEL = "src/models/steps-10000_words-gre_eps-0_model.pth"
 
     # USED DATASETS
     # KAR = DATASETS_DIR + "/kar.mtx"
@@ -521,17 +524,76 @@ class Utils:
             plt.clf()
 
     @staticmethod
-    def create_metrics_structure():
-        """Create structure with mean and standard deviation"""
-        return {"mean": 0, "std": 0}
+    def extrapolate_metrics(files_path: str, log_name: str, algs: List[str], metrics: List[str]):
+        """Extrapolate the metrics from the json files
+
+        Parameters
+        ----------
+        files_path : str
+            Path to the files
+        log_name : str
+            Name of the log file
+        algs : List[str]
+            List of algorithms names to evaluate
+        metrics : List[str]
+            List of metrics to evaluate
+        """
+        # Load the json file
+        with open(f"{files_path}/{log_name}.json", "r", encoding="utf-8") as f:
+            log = json.load(f)
+
+        # Create a json file with the mean and std of the metrics for each algorithm
+        metrics_dict = {}
+        for alg in algs:
+            metrics_dict[alg] = {}
+            for metric in metrics:
+                metrics_dict[alg][metric] = Utils.create_metrics_structure(metric)
+                metrics_dict[alg][metric] = Utils.calculate_stats(log[alg][metric], metric)
+                if metric == "goal":
+                    metrics_dict[alg][metric]["mean"] *= 100
+                    metrics_dict[alg][metric]["ci"] *= 100
+        
+        file_name = f"{files_path}/metrics.json"
+        # Save json file
+        with open(file_name, "w", encoding="utf-8") as f:
+            json.dump(metrics_dict, f, indent=4)
+
 
     @staticmethod
-    def calculate_stats(data_list):
-        """Compute mean and standard deviation of a list"""
+    def create_metrics_structure(metric: str):
+        """Create structure with mean and standard deviation (or confidence interval) of a metric"""
+        if metric == "goal":
+            return {"mean": 0, "ci": 0}
+        else: 
+            return {"mean": 0, "std": 0}
+
+    @staticmethod
+    def calculate_stats(data_list, metric):
+        """Compute mean and standard deviation (or confidence interval) of a metric"""
         if len(data_list) > 1:
-            return {"mean": stat.mean(data_list), "std": stat.stdev(data_list)}
+            if metric == "goal":
+                return {"mean": stat.mean(data_list), "ci": Utils.confidence_binary_test(data_list)}
+            else: 
+                return {"mean": stat.mean(data_list), "std": stat.stdev(data_list)}
         else:
-            return {"mean": stat.mean(data_list), "std": 0}
+            if metric == "goal":
+                return {"mean": stat.mean(data_list), "ci": 0}
+            else: 
+                return {"mean": stat.mean(data_list), "std": 0}
+        
+        
+    @staticmethod    
+    def confidence_binary_test(x: List[int]):
+        n = len(x)
+        p = sum(x) / n
+        z = 1.96  # 95% confidence level
+        std_error = math.sqrt(p * (1 - p) / n)
+        margin_of_error = z * std_error
+        #lower_bound = p - margin_of_error
+        #upper_bound = p + margin_of_error
+        # lower_bound *= 100
+        # upper_bound *= 100
+        return margin_of_error  # , (lower_bound, upper_bound)
         
     @staticmethod
     def fix_randomness(seed):

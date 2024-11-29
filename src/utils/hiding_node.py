@@ -231,6 +231,12 @@ class NodeHiding:
             algs=self.evaluation_algs,
             metrics=["nmi", "goal", "time", "steps"],
         )
+        Utils.extrapolate_metrics(
+            files_path=self.path_to_save,
+            log_name="evaluation_node_hiding",
+            algs=self.evaluation_algs,
+            metrics=["goal", "nmi", "f1", "time", "steps"]
+        )
 
     # Define a function to run each algorithm
     def run_alg(self, function: Callable) -> None:
@@ -253,8 +259,11 @@ class NodeHiding:
         community_target = self.get_new_community(new_communities)
         goal = self.check_goal(community_target)
 
+        # Compute F1 score
+        f1 = (2 * goal * nmi) / (goal + nmi)
+
         # Save results in the log dictionary
-        self.save_metrics(alg_name, goal, nmi, end, step)
+        self.save_metrics(alg_name, goal, nmi, f1, end, step)
 
     ############################################################################
     #                               AGENT                                      #
@@ -464,6 +473,7 @@ class NodeHiding:
             self.log_dict[alg] = {
                 "goal": [],
                 "nmi": [],
+                "f1": [],
                 "time": [],
                 "steps": [],
                 "target_node": [],
@@ -488,11 +498,12 @@ class NodeHiding:
         # self.log_dict["Agent"]["epsilon_prob"] = self.epsilon_prob
 
     def save_metrics(
-        self, alg: str, goal: int, nmi: float, time: float, steps: int
+        self, alg: str, goal: int, nmi: float, f1: float, time: float, steps: int
     ) -> dict: 
         """Save the metrics of the algorithm in the log dictionary"""
         self.log_dict[alg]["goal"].append(goal)
         self.log_dict[alg]["nmi"].append(nmi)
+        self.log_dict[alg]["f1"].append(f1)
         self.log_dict[alg]["time"].append(time)
         self.log_dict[alg]["steps"].append(steps)
         self.log_dict[alg]["target_node"].append(self.node_target)

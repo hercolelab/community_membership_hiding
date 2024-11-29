@@ -162,13 +162,7 @@ class GreedyHiding:
         """
         graph = self.graph.copy()
         communities = self.original_community_structure
-        # To avoid errors during the execution
-        graph_1 = graph.copy()
-        communities_1 = communities
-        loss_1 = 0
-        graph_2 = graph.copy()
-        communities_2 = communities
-        loss_2 = 0
+
         steps = self.steps
         target_community = self.target_community.copy()
 
