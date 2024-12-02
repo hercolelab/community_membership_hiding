@@ -109,7 +109,7 @@ class HyperParams(Enum):
     #       length of the communities.
     # - 3: choose a community based on the distribution of the number of
     #       nodes in the communities
-    COMMUNITY_CHANGE_METHOD = 1
+    COMMUNITY_CHANGE_METHOD = 2
 
     PREFERRED_COMMUNITY_SIZE = [0.2, 0.5, 0.8]
 
@@ -553,7 +553,7 @@ class Utils:
                     metrics_dict[alg][metric]["mean"] *= 100
                     metrics_dict[alg][metric]["ci"] *= 100
         
-        file_name = f"{files_path}/metrics.json"
+        file_name = f"{files_path}/{log_name}_metrics.json"
         # Save json file
         with open(file_name, "w", encoding="utf-8") as f:
             json.dump(metrics_dict, f, indent=4)
@@ -573,6 +573,8 @@ class Utils:
         if len(data_list) > 1:
             if metric == "goal":
                 return {"mean": stat.mean(data_list), "ci": Utils.confidence_binary_test(data_list)}
+            elif metric == "f1":
+                return {"mean": stat.mean(data_list), "std": 0}
             else: 
                 return {"mean": stat.mean(data_list), "std": stat.stdev(data_list)}
         else:

@@ -31,8 +31,8 @@ if __name__ == "__main__":
     args = get_args()
 
     datasets = [
-        #FilePaths.KAR.value,
-        FilePaths.WORDS.value,
+        FilePaths.KAR.value,
+        #FilePaths.WORDS.value,
         #FilePaths.VOTE.value,
         #FilePaths.NETS.value,
         #FilePaths.POW.value,
@@ -50,11 +50,13 @@ if __name__ == "__main__":
     }
     detection_algs = [
         DetectionAlgorithmsNames.GRE.value,
-        #DetectionAlgorithmsNames.LOUV.value,
-        #DetectionAlgorithmsNames.WALK.value,
+        DetectionAlgorithmsNames.LOUV.value,
+        DetectionAlgorithmsNames.WALK.value,
     ]
 
     seed = int(time.time())
+
+    metrics=["goal", "nmi", "f1", "time", "steps"]
 
     for dataset in datasets:
         editable_HyperParams.GRAPH_NAME = dataset
@@ -88,8 +90,12 @@ if __name__ == "__main__":
 
             # To change the model path, please refer to the class editable_FilePaths in the
             # file src/utils/utils.py
-            editable_FilePaths.TRAINED_MODEL = "src/models/steps-10000_"+datasets_names[dataset]+"_"+train_alg+"_model.pth"
-            model_path = editable_FilePaths.TRAINED_MODEL
+            
+            model_path = FilePaths.TRAINED_MODEL.value
+
+            # To use specified models trained on each dataset
+            #editable_FilePaths.TRAINED_MODEL = "src/models/steps-10000_"+datasets_names[dataset]+"_"+train_alg+"_model.pth"
+            #model_path = editable_FilePaths.TRAINED_MODEL
     
             for alg in detection_algs:
                 editable_HyperParams.DETECTION_ALG_NAME = alg
@@ -114,6 +120,7 @@ if __name__ == "__main__":
 
                     for beta in node_betas:
                         print("* * Node Hiding with beta = {}".format(beta))
+
                         node_hiding.set_parameters(beta=beta, tau=tau)
                         node_hiding.run_experiment()
 

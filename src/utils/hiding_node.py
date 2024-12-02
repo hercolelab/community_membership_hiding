@@ -179,7 +179,7 @@ class NodeHiding:
             # Change the target community
             self.reset_experiment()
 
-            #sizes.set_description(f"* * * Community Size {len(self.community_target)}")
+            sizes.set_description(f"* * * Community Size {len(self.community_target)}")
             steps = trange(self.eval_steps, desc="Testing Episode", leave=False)
             for step in steps:
                 # print("* Node Target:", self.node_target)

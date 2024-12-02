@@ -155,6 +155,7 @@ class CommunityDetectionAlgorithm(object):
             louv = graph.community_multilevel()
         else:
             louv = graph.community_multilevel(**args_louv)
+
         return self.vertexcluster_to_list(louv)
 
     def compute_walk(self, graph: ig.Graph, args_walk: dict) -> List[List[int]]:
