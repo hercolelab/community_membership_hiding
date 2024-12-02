@@ -49,7 +49,7 @@ class RoamHiding:
         target_node_neighbours = list(graph.neighbors(self.target_node))
         if len(target_node_neighbours) == 0:
             print("No neighbours for the target node", self.target_node)
-            Utils.fix_randomness(seed)
+            #Utils.fix_randomness(seed)
             return graph, self.detection_alg.compute_community(graph)
 
         # Choose v0 as the neighbour of target_node with the most connections

@@ -553,7 +553,7 @@ class Utils:
                     metrics_dict[alg][metric]["mean"] *= 100
                     metrics_dict[alg][metric]["ci"] *= 100
         
-        file_name = f"{files_path}/{log_name}_metrics.json"
+        file_name = f"{files_path}/metrics_{log_name}.json"
         # Save json file
         with open(file_name, "w", encoding="utf-8") as f:
             json.dump(metrics_dict, f, indent=4)

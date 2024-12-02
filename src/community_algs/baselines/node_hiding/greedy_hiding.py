@@ -166,9 +166,6 @@ class GreedyHiding:
         steps = self.steps
         target_community = self.target_community.copy()
 
-        loss_2 = 0
-        graph_2 = graph.copy()
-        communities_2 = communities
 
         while steps > 0:
             # Get the inter-community node with the highest degree, (add edge)
@@ -213,6 +210,9 @@ class GreedyHiding:
                 target_community = self.get_new_community(communities_1)
             elif candidate_1 is None and candidate_2 is None:
                 break
+
+            loss_1 = float('inf') if candidate_1 is None else loss_1
+            loss_2 = float('inf') if candidate_2 is None else loss_2
 
             if loss_1 < loss_2:
                 graph = graph_1
