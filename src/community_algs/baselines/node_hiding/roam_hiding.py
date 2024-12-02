@@ -29,7 +29,7 @@ class RoamHiding:
         self.edge_budget = edge_budget
         self.detection_alg = CommunityDetectionAlgorithm(detection_alg)
 
-    def roam_heuristic(self, budget: int, seed) -> tuple:
+    def roam_heuristic(self, budget: int) -> tuple:
         """
         The ROAM heuristic given a budget b:
             - Step 1: Remove the link between the source node, v, and its
@@ -83,6 +83,5 @@ class RoamHiding:
             graph.add_edge(v0, v0_neighbour)
             v_neighbours_not_v0.remove(v0_neighbour)
 
-        Utils.fix_randomness(seed)
         new_community_structure = self.detection_alg.compute_community(graph)
         return graph, new_community_structure

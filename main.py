@@ -34,7 +34,7 @@ if __name__ == "__main__":
         FilePaths.KAR.value,
         #FilePaths.WORDS.value,
         #FilePaths.VOTE.value,
-        #FilePaths.NETS.value,
+        #FilePaths.NETS.value,h
         #FilePaths.POW.value,
         #FilePaths.FB_75.value,
         #FilePaths.ASTR.value,
@@ -54,14 +54,14 @@ if __name__ == "__main__":
         DetectionAlgorithmsNames.WALK.value,
     ]
 
-    seed = int(time.time())
+    editable_HyperParams.seed = int(time.time())
 
     metrics=["goal", "nmi", "f1", "time", "steps"]
 
     for dataset in datasets:
         editable_HyperParams.GRAPH_NAME = dataset
         # ° --- Environment Setup --- ° #
-        env = GraphEnvironment(seed=seed, graph_path=dataset)
+        env = GraphEnvironment(seed=editable_HyperParams, graph_path=dataset)
 
         # ° ------  Agent Setup ----- ° #
         agent = Agent(env=env)

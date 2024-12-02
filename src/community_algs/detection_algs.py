@@ -3,6 +3,7 @@
 # sys.path.append('../../')
 from src.utils.utils import DetectionAlgorithmsNames
 from typing import List
+from src.utils.utils import editable_HyperParams, Utils
 
 from cdlib import algorithms
 import cdlib
@@ -70,6 +71,7 @@ class CommunityDetectionAlgorithm(object):
         # Rename DetectionAlgorithms Enum to da for convenience
         da = DetectionAlgorithmsNames
         # Choose the algorithm
+        Utils.fix_randomness(editable_HyperParams.seed)
         if self.alg_name == da.LOUV.value:
             return self.compute_louv(graph, args)
         elif self.alg_name == da.WALK.value:

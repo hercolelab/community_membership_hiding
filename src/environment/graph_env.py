@@ -508,7 +508,6 @@ class GraphEnvironment(object):
         self.old_penalty_value = 0
         # Compute the community structure of the graph, before the action,
         # i.e. before the deception
-        Utils.fix_randomness(self.seed)
         self.original_community_structure = self.detection.compute_community(self.graph)
         # ! It is a NodeClustering object
         self.old_community_structure = self.original_community_structure

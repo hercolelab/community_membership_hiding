@@ -83,6 +83,7 @@ class editable_HyperParams:
     GRAPH_NAME = FilePaths.KAR.value
     # ! Define the detection algorithm to use (change the following line to change the algorithm)
     DETECTION_ALG_NAME = DetectionAlgorithmsNames.GRE.value
+    seed = 33
 
 
 class HyperParams(Enum):

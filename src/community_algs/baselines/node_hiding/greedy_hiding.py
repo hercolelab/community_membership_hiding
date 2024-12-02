@@ -150,7 +150,7 @@ class GreedyHiding:
         possible_action = possible_actions_add + possible_actions_remove
         return possible_action
 
-    def hide_target_node_from_community(self, seed) -> Tuple[nx.Graph, List[int], int]:
+    def hide_target_node_from_community(self) -> Tuple[nx.Graph, List[int], int]:
         """
         Hide the target node from the target community by rewiring its edges,
         choosing the node with the highest degree between adding or removing an edge.
@@ -175,7 +175,6 @@ class GreedyHiding:
                 # Compute the community structure after adding the edge, and restore the graph
                 graph_1 = graph.copy()
                 graph_1.add_edge(self.target_node, candidate_1)
-                Utils.fix_randomness(seed)
                 communities_1 = self.detection_alg.compute_community(graph_1)
                 # Compute the loss with the new community structures
                 loss_1 = self.compute_loss(
@@ -191,7 +190,6 @@ class GreedyHiding:
                 # Compute the community structure after removing the edge, and restore the graph
                 graph_2 = graph.copy()
                 graph_2.remove_edge(self.target_node, candidate_2)
-                Utils.fix_randomness(seed)
                 communities_2 = self.detection_alg.compute_community(graph_2)
                 loss_2 = self.compute_loss(
                     communities,
