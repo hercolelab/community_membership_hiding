@@ -1,4 +1,4 @@
-from src.utils.utils import HyperParams, Utils, FilePaths, DetectionAlgorithmsNames
+from src.utils.utils import editable_HyperParams, HyperParams, Utils, FilePaths, DetectionAlgorithmsNames
 from src.environment.graph_env import GraphEnvironment
 from src.agent.agent import Agent
 
@@ -7,6 +7,7 @@ from src.utils.hiding_community import CommunityHiding
 
 import argparse
 import math
+import time
 
 
 def get_args():
@@ -29,11 +30,11 @@ if __name__ == "__main__":
 
     datasets = [
         FilePaths.KAR.value,
-        FilePaths.WORDS.value,
-        FilePaths.VOTE.value,
+        #FilePaths.WORDS.value,
+        #FilePaths.VOTE.value,
         # FilePaths.NETS.value,
-        FilePaths.POW.value,
-        FilePaths.FB_75.value,
+        #FilePaths.POW.value,
+        #FilePaths.FB_75.value,
         # FilePaths.ASTR.value,
     ]
     detection_algs = [
@@ -41,6 +42,8 @@ if __name__ == "__main__":
         DetectionAlgorithmsNames.LOUV.value,
         DetectionAlgorithmsNames.WALK.value,
     ]
+
+    editable_HyperParams.seed = time.time()
 
     for dataset in datasets:
         # ° --- Environment Setup --- ° #
@@ -71,7 +74,8 @@ if __name__ == "__main__":
                 model_path = FilePaths.TRAINED_MODEL.value
 
                 # Tau defines the strength of the constraint on the goal achievement
-                taus = [0.3, 0.5, 0.8]
+                #taus = [0.3, 0.5, 0.8]
+                taus = [0.5]
                 # BETAs defines the number of actions to perform
                 # Beta for the community hiding task defines the percentage of rewiring
                 # action, add or remove edges

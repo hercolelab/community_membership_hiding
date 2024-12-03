@@ -2,6 +2,7 @@
 # import sys
 # sys.path.append('../../')
 from src.utils.utils import DetectionAlgorithmsNames
+from src.utils.utils import editable_HyperParams
 from typing import List
 
 from cdlib import algorithms
@@ -10,6 +11,7 @@ import cdlib
 import os
 import networkx as nx
 import igraph as ig
+import random
 import matplotlib.pyplot as plt
 
 plt.style.use("default")
@@ -69,6 +71,8 @@ class CommunityDetectionAlgorithm(object):
 
         # Rename DetectionAlgorithms Enum to da for convenience
         da = DetectionAlgorithmsNames
+        # Fix randomness
+        random.seed(editable_HyperParams.seed)
         # Choose the algorithm
         if self.alg_name == da.LOUV.value:
             return self.compute_louv(graph, args)
