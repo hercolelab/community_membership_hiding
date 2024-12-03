@@ -8,6 +8,7 @@ from src.utils.hiding_community import CommunityHiding
 import argparse
 import math
 import time
+import yaml
 
 
 def get_args():
@@ -43,11 +44,24 @@ if __name__ == "__main__":
         DetectionAlgorithmsNames.WALK.value,
     ]
 
-    editable_HyperParams.seed = time.time()
+    dataset_names = {
+        FilePaths.KAR.value: "karate",
+        FilePaths.WORDS.value: "words",
+        FilePaths.VOTE.value: "vote",
+        FilePaths.NETS.value: "nets",
+        FilePaths.POW.value: "pow",
+        FilePaths.FB_75.value: "fb",
+        FilePaths.ASTR.value: "astr",
+    }
+    editable_HyperParams.seed = int(time.time())
+    config_path = "src/community_algs/dcmh/conf/base.yaml"
+    with open(config_path, 'r') as file:
+        dcmh_config = yaml.safe_load(file)
 
     for dataset in datasets:
         # ° --- Environment Setup --- ° #
         env = GraphEnvironment(graph_path=dataset)
+        dcmh_config['dataset'] = dataset_names[dataset]
 
         # ° ------  Agent Setup ----- ° #
         agent = Agent(env=env)
@@ -97,6 +111,7 @@ if __name__ == "__main__":
                 )
                 for tau in taus:
                     print("* Node Hiding with tau = {}".format(tau))
+
                     for beta in node_betas:
                         print("* * Beta Node = {}".format(beta))
                         node_hiding.set_parameters(beta=beta, tau=tau)

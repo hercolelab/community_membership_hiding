@@ -8,6 +8,7 @@ from src.community_algs.baselines.node_hiding.degree_hiding import DegreeHiding
 from src.community_algs.baselines.node_hiding.roam_hiding import RoamHiding
 from src.community_algs.baselines.node_hiding.centrality_hiding import CentralityHiding
 from src.community_algs.baselines.node_hiding.greedy_hiding import GreedyHiding
+from src.community_algs.dcmh.dcmh_hiding import DcmhHiding
 
 from typing import List, Callable, Tuple
 from tqdm import trange
@@ -16,6 +17,7 @@ import networkx as nx
 import cdlib
 import time
 import copy
+import yaml
 
 
 class NodeHiding:
@@ -64,6 +66,7 @@ class NodeHiding:
         # HyperParams.ALGS_EVAL.value
         self.evaluation_algs = [
             "Agent",
+            "DCMH",
             "Random",
             "Degree",
             "Roam",
@@ -127,6 +130,18 @@ class NodeHiding:
             self.agent.env.change_target_node()
         self.node_target = self.agent.env.node_target
 
+        # DCMH method
+        self.dcmh_hiding = DcmhHiding(
+            env=self.agent.env,
+            steps=self.edge_budget
+        )
+
+        # DCMH config file
+        with open('src/community_algs/dcmh/conf/base.yaml', 'r') as file:
+            cfg = yaml.safe_load(file)
+        self.dcmh_config = cfg
+        self.dcmh_evader_cfg = self.dcmh_hiding.get_evader_configuration(self.dcmh_config)       
+
         # Baseline algorithms
         self.random_hiding = RandomHiding(
             env=self.agent.env,
@@ -154,6 +169,7 @@ class NodeHiding:
             target_community=self.community_target,
         )
 
+
     ############################################################################
     #                               EVALUATION                                 #
     ############################################################################
@@ -180,18 +196,28 @@ class NodeHiding:
             sizes.set_description(f"* * * Community Size {len(self.community_target)}")
             steps = trange(self.eval_steps, desc="Testing Episode", leave=False)
             for step in steps:
-                # print("* Node Target:", self.node_target)
-                # print("* Community Target Length:", len(self.community_target))
-                # print("* Edge Budget:", self.edge_budget)
-
                 # Change target node within the community
                 self.reset_experiment(target_community=False)
+
+                #print("* Test Episode:", step+1)
+                #print("* Node Target:", self.node_target)
+                #print("* Community Target:", self.community_target)
+                #print("* Edge Budget:", self.edge_budget)
 
                 # ° ------ Agent Rewiring ------ ° #
                 steps.set_description(
                     f"* * * Testing Episode {step+1} | Agent Rewiring"
                 )
                 self.run_alg(self.run_agent)
+
+                # ° ------ DCMH Rewiring ------ ° #
+                steps.set_description(
+                    f"* * * Testing Episode {step+1} | DCMH Rewiring"
+                )
+                self.dcmh_evader_cfg['u'] = self.node_target
+                self.dcmh_evader_cfg['tau'] = self.tau
+                self.dcmh_evader_cfg['budget'] = self.edge_budget
+                self.run_alg(self.run_dcmh)
 
                 # ° ------   Baselines   ------ ° #
                 # Random Rewiring
@@ -285,7 +311,32 @@ class NodeHiding:
             self.agent.env.new_community_structure,
             self.agent.env.used_edge_budget,
         )
+    
+    ############################################################################
+    #                               DCMH                                       #
+    ############################################################################
+    def run_dcmh(self) -> Tuple[str, cdlib.NodeClustering, int]:
+        """
+        Evaluate the dcmh-method on the Node Hiding task
 
+        Returns
+        -------
+        Tuple[str, cdlib.NodeClustering, int]:
+            Algorithm name, Set of new communities, steps
+        """
+
+        # Run the DCMH method
+        dcmh_graph, steps = self.dcmh_hiding.comm_evading(self.dcmh_config)
+
+        # Compute the new community structure
+        dcmh_communities = self.dcmh_hiding.detection_alg.compute_community(dcmh_graph, dcmh=True)
+
+        return (
+            "DCMH",
+            dcmh_communities,
+            steps,
+        ) 
+    
     ############################################################################
     #                               BASELINES                                  #
     ############################################################################
@@ -421,13 +472,13 @@ class NodeHiding:
                 return community
         raise ValueError("Community not found")
 
-    def check_goal(self, new_community: int) -> int:
+    def check_goal(self, new_community: List[int]) -> int:
         """
         Check if the goal of hiding the target node was achieved
 
         Parameters
         ----------
-        new_community : int
+        new_community : List[int]
             New community of the target node
 
         Returns
@@ -467,7 +518,7 @@ class NodeHiding:
                 "community_len": [],
             }
 
-        # Add environment parameters to the log dictionaryù
+        # Add environment parameters to the log dictionary
         self.log_dict["env"] = dict()
         self.log_dict["env"]["dataset"] = self.env_name
         self.log_dict["env"]["detection_alg"] = self.detection_alg

@@ -50,7 +50,7 @@ class CommunityDetectionAlgorithm(object):
         self.ig_graph = ig.Graph.from_networkx(graph)
         return self.ig_graph
 
-    def compute_community(self, graph: nx.Graph, args: dict = None) -> List[List[int]]:
+    def compute_community(self, graph: nx.Graph, dcmh : bool = False, args: dict = None) -> List[List[int]]:
         """
         Compute the community detection algorithm
 
@@ -66,13 +66,12 @@ class CommunityDetectionAlgorithm(object):
         List[List[int]]
             list of list of vertices in each cluster
         """
-        # Transform the graph to igraph
-        graph = self.networkx_to_igraph(graph)
+        # Transform the graph to igraph (not for dcmh approach)
+        if not dcmh:
+            graph = self.networkx_to_igraph(graph)
 
         # Rename DetectionAlgorithms Enum to da for convenience
         da = DetectionAlgorithmsNames
-        # Fix randomness
-        random.seed(editable_HyperParams.seed)
         # Choose the algorithm
         if self.alg_name == da.LOUV.value:
             return self.compute_louv(graph, args)
@@ -155,6 +154,8 @@ class CommunityDetectionAlgorithm(object):
         List[List[int]]
             list of list of vertices in each cluster
         """
+        # Fix randomness
+        random.seed(editable_HyperParams.seed)
         if args_louv is None:
             louv = graph.community_multilevel()
         else:
@@ -177,6 +178,8 @@ class CommunityDetectionAlgorithm(object):
         List[List[int]]
             list of list of vertices in each cluster
         """
+        # Fix randomness
+        random.seed(editable_HyperParams.seed)
         if args_walk is None:
             walk = graph.community_walktrap()
         else:
@@ -200,6 +203,8 @@ class CommunityDetectionAlgorithm(object):
         List[List[int]]
             list of list of vertices in each cluster
         """
+        # Fix randomness
+        random.seed(editable_HyperParams.seed)
         if args_gre is None:
             greed = graph.community_fastgreedy()
         else:
@@ -223,6 +228,8 @@ class CommunityDetectionAlgorithm(object):
         List[List[int]]
             list of list of vertices in each cluster
         """
+        # Fix randomness
+        random.seed(editable_HyperParams.seed)
         if args_infomap is None:
             infomap = graph.community_infomap()
         else:
@@ -245,6 +252,8 @@ class CommunityDetectionAlgorithm(object):
         List[List[int]]
             list of list of vertices in each cluster
         """
+        # Fix randomness
+        random.seed(editable_HyperParams.seed)
         if args_lab is None:
             lab = graph.community_label_propagation()
         else:
@@ -267,6 +276,8 @@ class CommunityDetectionAlgorithm(object):
         List[List[int]]
             list of list of vertices in each cluster
         """
+        # Fix randomness
+        random.seed(editable_HyperParams.seed)
         if args_eig is None:
             eig = graph.community_leading_eigenvector()
         else:
@@ -289,6 +300,8 @@ class CommunityDetectionAlgorithm(object):
         List[List[int]]
             list of list of vertices in each cluster
         """
+        # Fix randomness
+        random.seed(editable_HyperParams.seed)
         if btw is None:
             btw = graph.community_edge_betweenness()
         else:
@@ -312,6 +325,8 @@ class CommunityDetectionAlgorithm(object):
         List[List[int]]
             list of list of vertices in each cluster
         """
+        # Fix randomness
+        random.seed(editable_HyperParams.seed)
         if args_spin is None:
             spin = graph.community_spinglass()
         else:
@@ -334,6 +349,8 @@ class CommunityDetectionAlgorithm(object):
         List[List[int]]
             list of list of vertices in each cluster
         """
+        # Fix randomness
+        random.seed(editable_HyperParams.seed)
         if args_opt is None:
             opt = graph.community_optimal_modularity()
         else:
