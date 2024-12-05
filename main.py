@@ -30,8 +30,8 @@ if __name__ == "__main__":
     args = get_args()
 
     datasets = [
-        FilePaths.KAR.value,
-        #FilePaths.WORDS.value,
+        #FilePaths.KAR.value,
+        FilePaths.WORDS.value,
         #FilePaths.VOTE.value,
         # FilePaths.NETS.value,
         #FilePaths.POW.value,
@@ -88,8 +88,8 @@ if __name__ == "__main__":
                 model_path = FilePaths.TRAINED_MODEL.value
 
                 # Tau defines the strength of the constraint on the goal achievement
-                #taus = [0.3, 0.5, 0.8]
-                taus = [0.5]
+                taus = [0.3, 0.5, 0.8]
+                #taus = [0.5]
                 # BETAs defines the number of actions to perform
                 # Beta for the community hiding task defines the percentage of rewiring
                 # action, add or remove edges

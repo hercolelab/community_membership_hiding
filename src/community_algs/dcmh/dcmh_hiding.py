@@ -50,6 +50,7 @@ class DcmhHiding():
         a_u = torch.zeros(G.vcount(), dtype=torch.int)
         a_u[neighbors] = 1
         history = [a_u]
+        temp_cf = {'counterfactual': g_prime, 'steps': 0}
         fixed_nodes = torch.LongTensor([v for v in neighbors if G.degree(v) == 1]+[v for v in neighbors if G.degree(u) == 1])
         edges_changed = {}
         #Communities
@@ -67,7 +68,7 @@ class DcmhHiding():
         v_opt[fixed_nodes] = torch.Tensor([1])
 
         #EVASION LOOP
-        while goal==0 and t < T:
+        while (goal==0 or budget_used < budget) and t < T:
             
             #Perturbation update
             p_hat = torch.tanh(x_hat)
@@ -104,20 +105,26 @@ class DcmhHiding():
                     history.append(a_u)
                     g_prime = G.copy()
                 else: 
-                    g_prime = G
+                    g_prime = temp_cf['counterfactual'].copy()
                     break
         
-            if budget_used == budget and goal==0:
-                if reinit: 
-                    x_hat, optimizer = self.initialize_perturbation_vector(n_nodes, lr, u, fixed_nodes)
-                    # Restore parameters for evasion loop
-                    budget_used=0
-                    history.append(a_u)
-                    g_prime = G.copy()
-                else: 
-                    break
-        
-        return g_prime, budget_used
+            if budget_used == budget:
+                temp_cf['counterfactual'] = g_prime.copy()
+                temp_cf['steps'] = budget_used
+                if goal == 0:
+                    if reinit: 
+                        x_hat, optimizer = self.initialize_perturbation_vector(n_nodes, lr, u, fixed_nodes)
+                        # Restore parameters for evasion loop
+                        budget_used=0
+                        history.append(a_u)
+                        g_prime = G.copy()
+                    else: 
+                        break
+
+        if goal == 1:
+            return g_prime, budget_used
+        else:
+            return temp_cf['counterfactual'], temp_cf['steps']
     
     ############################################################################
     #                                  LOSS                                    #

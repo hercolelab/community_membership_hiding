@@ -4,9 +4,9 @@ train_comm_det_alg: greedy
 karate:
   evader:
     T: 50
-    u: 10
     lambd: 1
     lr: 0.01
+    u: 10
     budget: 10
     tau: 0.5
     attention: True
@@ -17,7 +17,7 @@ words:
     T: 100
     u: 10
     lambd: 1
-    lr: 0.01
+    lr: 0.03
     dist_f: frobenius_dist
     budget_factor: 1
     tau: 0.5
