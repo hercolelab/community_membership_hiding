@@ -1,4 +1,4 @@
-from src.utils.utils import HyperParams, Utils, FilePaths, DetectionAlgorithmsNames
+from src.utils.utils import editable_HyperParams, HyperParams, Utils, FilePaths, DetectionAlgorithmsNames
 from src.environment.graph_env import GraphEnvironment
 from src.agent.agent import Agent
 
@@ -7,6 +7,8 @@ from src.utils.hiding_community import CommunityHiding
 
 import argparse
 import math
+import time
+import yaml
 
 
 def get_args():
@@ -28,12 +30,12 @@ if __name__ == "__main__":
     args = get_args()
 
     datasets = [
-        FilePaths.KAR.value,
+        #FilePaths.KAR.value,
         FilePaths.WORDS.value,
-        FilePaths.VOTE.value,
+        #FilePaths.VOTE.value,
         # FilePaths.NETS.value,
-        FilePaths.POW.value,
-        FilePaths.FB_75.value,
+        #FilePaths.POW.value,
+        #FilePaths.FB_75.value,
         # FilePaths.ASTR.value,
     ]
     detection_algs = [
@@ -42,9 +44,24 @@ if __name__ == "__main__":
         DetectionAlgorithmsNames.WALK.value,
     ]
 
+    dataset_names = {
+        FilePaths.KAR.value: "karate",
+        FilePaths.WORDS.value: "words",
+        FilePaths.VOTE.value: "vote",
+        FilePaths.NETS.value: "nets",
+        FilePaths.POW.value: "pow",
+        FilePaths.FB_75.value: "fb",
+        FilePaths.ASTR.value: "astr",
+    }
+    editable_HyperParams.seed = int(time.time())
+    config_path = "src/community_algs/dcmh/conf/base.yaml"
+    with open(config_path, 'r') as file:
+        dcmh_config = yaml.safe_load(file)
+
     for dataset in datasets:
         # ° --- Environment Setup --- ° #
         env = GraphEnvironment(graph_path=dataset)
+        dcmh_config['dataset'] = dataset_names[dataset]
 
         # ° ------  Agent Setup ----- ° #
         agent = Agent(env=env)
@@ -72,6 +89,7 @@ if __name__ == "__main__":
 
                 # Tau defines the strength of the constraint on the goal achievement
                 taus = [0.3, 0.5, 0.8]
+                #taus = [0.5]
                 # BETAs defines the number of actions to perform
                 # Beta for the community hiding task defines the percentage of rewiring
                 # action, add or remove edges
@@ -93,6 +111,7 @@ if __name__ == "__main__":
                 )
                 for tau in taus:
                     print("* Node Hiding with tau = {}".format(tau))
+
                     for beta in node_betas:
                         print("* * Beta Node = {}".format(beta))
                         node_hiding.set_parameters(beta=beta, tau=tau)

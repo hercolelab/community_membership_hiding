@@ -73,6 +73,8 @@ class SimilarityFunctionsNames(Enum):
     JAC_1 = "jaccard_1"
     JAC_2 = "jaccard_2"
 
+class editable_HyperParams:
+    seed = 10
 
 class HyperParams(Enum):
     """Hyperparameters for the Environment"""
