@@ -464,7 +464,7 @@ class Utils:
     ############################################################################
     @staticmethod
     def save_test(
-        log: dict, files_path: str, log_name: str, algs: List[str], metrics: List[str]
+        log: dict, files_path: str, log_name: str, algs: List[str], metrics: List[str], budget: int
     ):
         """Save and Plot the testing results
 
@@ -480,21 +480,48 @@ class Utils:
             List of algorithms names to evaluate
         metrics : List[str]
             List of metrics to evaluate
+        budget : int
+            Number of allowed changes
         """
         file_name = f"{files_path}/{log_name}.json"
         # Save json file
         with open(file_name, "w", encoding="utf-8") as f:
             json.dump(log, f, indent=4)
 
-        for metric in metrics:
-            # Create a DataFrame with the mean values of each algorithm for the metric
-            df = pd.DataFrame(
-                {
-                    "Algorithm": algs,
-                    metric.capitalize(): [mean(log[alg][metric]) for alg in algs],
-                }
-            )
+        metrics.append("f1 score")
 
+        for metric in metrics:
+            
+            # Create a DataFrame with the mean values of each algorithm for the metric
+            if metric == "steps":
+                df = pd.DataFrame(
+                    {
+                        "Algorithm": algs,
+                        metric.capitalize(): [
+                            mean([log[alg][metric][i] for i in range(len(log[alg]["goal"])) if log[alg]["goal"][i] == 1])/budget 
+                            if any(log[alg]["goal"][i] == 1 for i in range(len(log[alg]["goal"]))) else 0 
+                            for alg in algs
+                        ],
+                    }
+                )
+            elif metric == "f1 score":
+                df = pd.DataFrame(
+                    {
+                        "Algorithm": algs,
+                        metric.capitalize(): [ mean([
+                                2 * (log[alg]["goal"][i] * log[alg]["nmi"][i]) / (log[alg]["goal"][i] + log[alg]["nmi"][i])
+                                for i in range(len(log[alg]["goal"]))
+                            ]) for alg in algs]
+                    }
+                )
+            else:
+                df = pd.DataFrame(
+                    {
+                        "Algorithm": algs,
+                        metric.capitalize(): [mean(log[alg][metric]) for alg in algs],
+                    }
+                )
+            
             # Convert the goal column to percentage
             if metric == "goal":
                 df[metric.capitalize()] = df[metric.capitalize()] * 100
@@ -513,6 +540,8 @@ class Utils:
                 plt.ylabel(f"{metric.capitalize()} reached %")
             elif metric == "time":
                 plt.ylabel(f"{metric.capitalize()} (s)")
+            elif metric == "steps":
+                plt.ylabel("Budget used % if goal reached")
             else:
                 plt.ylabel(metric.capitalize())
             plt.savefig(f"{files_path}/{log_name}_{metric}.png")

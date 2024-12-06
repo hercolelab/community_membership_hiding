@@ -254,6 +254,7 @@ class NodeHiding:
             log_name="evaluation_node_hiding",
             algs=self.evaluation_algs,
             metrics=["nmi", "goal", "time", "steps"],
+            budget=self.edge_budget,
         )
 
     # Define a function to run each algorithm
