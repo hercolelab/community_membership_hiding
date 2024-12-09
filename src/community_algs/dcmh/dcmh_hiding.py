@@ -24,6 +24,7 @@ class DcmhHiding():
         self.env = env
         self.graph = self.env.original_graph
         self.detection_alg = self.env.detection
+        self.budget = steps
     ############################################################################
     #                                EVADING                                   #
     ############################################################################
@@ -31,11 +32,11 @@ class DcmhHiding():
     def comm_evading(self, cfg: DictConfig) -> Tuple[ig.Graph, int]:
 
         # Parameters
-        T, lr, u, lambd, budget, tau, attention, reinit = self.get_evader_parameters(cfg)
+        T, lr, u, lambd, beta, tau, attention, reinit = self.get_evader_parameters(cfg)
         seed = editable_HyperParams.seed
 
         # Training detection algorithm
-        da_train = CommunityDetectionAlgorithm("greedy")
+        da_train = CommunityDetectionAlgorithm(cfg["train_alg"])
 
         # Evasion parameters
         t = 0
@@ -95,7 +96,7 @@ class DcmhHiding():
             optimizer.step()
             t += 1
             
-            if budget_used > budget:
+            if budget_used > self.budget:
                 if reinit: 
                     x_hat, optimizer = self.initialize_perturbation_vector(n_nodes, lr, u, fixed_nodes) 
                     # Restore parameters for evasion loop
@@ -107,7 +108,7 @@ class DcmhHiding():
                     g_prime = G
                     break
         
-            if budget_used == budget and goal==0:
+            if budget_used == self.budget and goal==0:
                 if reinit: 
                     x_hat, optimizer = self.initialize_perturbation_vector(n_nodes, lr, u, fixed_nodes)
                     # Restore parameters for evasion loop
@@ -390,13 +391,13 @@ class DcmhHiding():
         evader_cfg = self.get_evader_configuration(cfg)
         T = evader_cfg["T"]
         lr = evader_cfg["lr"]
-        u = evader_cfg["u"]
         lambd = evader_cfg["lambd"]
-        budget = evader_cfg["budget"]
-        tau = evader_cfg["tau"]
-        attention = evader_cfg["attention"]
-        reinit = evader_cfg["reinitialization"]
-        return T, lr, u, lambd, budget, tau, attention, reinit
+        u = cfg["u"]
+        beta = cfg["budget_factor"]
+        tau = cfg["tau"]
+        attention = cfg["attention"]
+        reinit = cfg["reinitialization"]
+        return T, lr, u, lambd, beta, tau, attention, reinit
 
     def get_evader_configuration(self, cfg: DictConfig):
         """
@@ -413,14 +414,14 @@ class DcmhHiding():
             The evader configuration for a specific dataset.
         """
         dataset = cfg["dataset"]
-        if dataset == 'karate':
-            evader_cfg = cfg["karate"]["evader"]
-        elif dataset == 'words':
-            evader_cfg = cfg["words"]["evader"]
-        elif dataset == 'vote':
-            evader_cfg = cfg["vote"]["evader"]
-        else:
-            raise ValueError(f"Unsupported dataset: {dataset}")
+        train_alg = cfg["train_alg"]
+        test_alg = cfg["test_alg"]
+        tau = cfg["tau"]
+        beta = cfg["budget_factor"]
+        try:
+            evader_cfg = cfg[dataset][f"training_{train_alg}"][f"testing_{test_alg}"][f"tau_{tau}"][f"beta_{beta}"]
+        except KeyError:
+            raise ValueError("Combination of hyperparameters not found")
         return evader_cfg
     
     def get_changes(self, a1: torch.Tensor, a2: torch.Tensor, u: int) -> Tuple[dict, int]:

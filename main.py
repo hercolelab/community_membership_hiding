@@ -25,13 +25,23 @@ def get_args():
     # Argument parsing
     return parser.parse_args()
 
+dataset_names = {
+    FilePaths.KAR.value: "karate",
+    FilePaths.WORDS.value: "words",
+    FilePaths.VOTE.value: "vote",
+    FilePaths.NETS.value: "nets",
+    FilePaths.POW.value: "pow",
+    FilePaths.FB_75.value: "fb",
+    FilePaths.ASTR.value: "astr",
+}
+
 
 if __name__ == "__main__":
     args = get_args()
 
     datasets = [
-        FilePaths.KAR.value,
-        #FilePaths.WORDS.value,
+        #FilePaths.KAR.value,
+        FilePaths.WORDS.value,
         #FilePaths.VOTE.value,
         # FilePaths.NETS.value,
         #FilePaths.POW.value,
@@ -44,31 +54,22 @@ if __name__ == "__main__":
         DetectionAlgorithmsNames.WALK.value,
     ]
 
-    dataset_names = {
-        FilePaths.KAR.value: "karate",
-        FilePaths.WORDS.value: "words",
-        FilePaths.VOTE.value: "vote",
-        FilePaths.NETS.value: "nets",
-        FilePaths.POW.value: "pow",
-        FilePaths.FB_75.value: "fb",
-        FilePaths.ASTR.value: "astr",
-    }
     editable_HyperParams.seed = int(time.time())
-    config_path = "src/community_algs/dcmh/conf/base.yaml"
-    with open(config_path, 'r') as file:
-        dcmh_config = yaml.safe_load(file)
+    with open("src/community_algs/dcmh/conf/base.yaml", "r") as file:
+        cfg = yaml.safe_load(file)
 
     for dataset in datasets:
         # ° --- Environment Setup --- ° #
         env = GraphEnvironment(graph_path=dataset)
-        dcmh_config['dataset'] = dataset_names[dataset]
+        cfg["dataset"] = dataset_names[dataset]
 
         # ° ------  Agent Setup ----- ° #
         agent = Agent(env=env)
 
         for alg in detection_algs:
-            print("Dataset: {} - Detection Algorithm: {}".format(dataset, alg))
+            print("Dataset: {} - Detection Algorithm: {}".format(env.env_name, alg))
             agent.env.set_communities(alg)
+            cfg["test_alg"] = alg
 
             # ° ------    TRAIN    ------ ° #
             if args.mode == "train" or args.mode == "both":
@@ -99,7 +100,7 @@ if __name__ == "__main__":
                 node_betas = [0.5, 1, 2]
 
                 # Initialize the test class
-                node_hiding = NodeHiding(agent=agent, model_path=model_path)
+                node_hiding = NodeHiding(agent=agent, model_path=model_path, dcmh_config=cfg)
                 community_hiding = CommunityHiding(agent=agent, model_path=model_path)
 
                 print("* NOTE:")

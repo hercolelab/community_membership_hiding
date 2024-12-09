@@ -11,6 +11,7 @@ from src.community_algs.baselines.node_hiding.greedy_hiding import GreedyHiding
 from src.community_algs.dcmh.dcmh_hiding import DcmhHiding
 
 from typing import List, Callable, Tuple
+from omegaconf import DictConfig
 from tqdm import trange
 import multiprocessing
 import networkx as nx
@@ -33,6 +34,7 @@ class NodeHiding:
         self,
         agent: Agent,
         model_path: str,
+        dcmh_config: DictConfig,
         lr: float = HyperParams.LR_EVAL.value,
         gamma: float = HyperParams.GAMMA_EVAL.value,
         lambda_metric: float = HyperParams.LAMBDA_EVAL.value,
@@ -63,6 +65,8 @@ class NodeHiding:
         self.edge_budget = None
         self.max_steps = None
 
+        self.dcmh_config = dcmh_config
+
         # HyperParams.ALGS_EVAL.value
         self.evaluation_algs = [
             "Agent",
@@ -88,6 +92,8 @@ class NodeHiding:
         """
         self.beta = beta
         self.tau = tau
+        self.dcmh_config['budget_factor'] = beta
+        self.dcmh_config['tau'] = tau
 
         self.agent.env.beta = beta
         self.agent.env.tau = tau
@@ -129,18 +135,13 @@ class NodeHiding:
         else:
             self.agent.env.change_target_node()
         self.node_target = self.agent.env.node_target
+        self.dcmh_config['u'] = self.node_target
 
         # DCMH method
         self.dcmh_hiding = DcmhHiding(
             env=self.agent.env,
             steps=self.edge_budget
-        )
-
-        # DCMH config file
-        with open('src/community_algs/dcmh/conf/base.yaml', 'r') as file:
-            cfg = yaml.safe_load(file)
-        self.dcmh_config = cfg
-        self.dcmh_evader_cfg = self.dcmh_hiding.get_evader_configuration(self.dcmh_config)       
+        )       
 
         # Baseline algorithms
         self.random_hiding = RandomHiding(
@@ -186,6 +187,7 @@ class NodeHiding:
         sizes = trange(
             len(preferred_size_list), desc="* * * Community Size", leave=True
         )
+        
         for i in sizes:
             # Change the community size at each episode
             self.agent.env.preferred_community_size = preferred_size_list[i]
@@ -214,9 +216,6 @@ class NodeHiding:
                 steps.set_description(
                     f"* * * Testing Episode {step+1} | DCMH Rewiring"
                 )
-                self.dcmh_evader_cfg['u'] = self.node_target
-                self.dcmh_evader_cfg['tau'] = self.tau
-                self.dcmh_evader_cfg['budget'] = self.edge_budget
                 self.run_alg(self.run_dcmh)
 
                 # ° ------   Baselines   ------ ° #

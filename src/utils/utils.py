@@ -28,9 +28,9 @@ class FilePaths(Enum):
     # TRAINED_MODEL = "src/models/nets/greedy/eps-10/lr-0.0007/gamma-0.95/lambda-0.1/alpha-0.7/model.pth"
 
     # USED DATASETS
-    # KAR = DATASETS_DIR + "/kar.mtx"
+    KAR = DATASETS_DIR + "/kar.mtx"
     WORDS = DATASETS_DIR + "/words.mtx"
-    # VOTE = DATASETS_DIR + "/vote.mtx"
+    VOTE = DATASETS_DIR + "/vote.mtx"
 
     # DIAG DATASETS
     AMZ = DATASETS_DIR + "/amz.gml"
@@ -38,8 +38,8 @@ class FilePaths(Enum):
     FB_75 = DATASETS_DIR + "/fb-75.gml"
     POW = DATASETS_DIR + "/pow.gml"
     NETS = DATASETS_DIR + "/nets.gml"
-    VOTE = DATASETS_DIR + "/vote.gml"
-    KAR = DATASETS_DIR + "/kar.gml"
+    #VOTE = DATASETS_DIR + "/vote.gml"
+    #KAR = DATASETS_DIR + "/kar.gml"
 
 
 class DetectionAlgorithmsNames(Enum):

@@ -1,28 +1,103 @@
-dataset: "karate"
-train_comm_det_alg: greedy
+dataset: karate
+train_alg: greedy
+test_alg: greedy
+
+attention: True
+reinitialization: True
+dist_f: frobenius_dist
+u: 0
+tau: 0.5
+budget_factor: 1
 
 karate:
-  evader:
-    T: 50
-    u: 10
-    lambd: 1
-    lr: 0.01
-    budget: 10
-    tau: 0.5
-    attention: True
-    reinitialization: True
+  training_greedy:
+    testing_greedy:
+      tau_0.5:
+        beta_0.5:
+            T: 80
+            lr : 0.097
+            lambd: 0.29
+        beta_1:
+            T: 70
+            lr : 0.099
+            lambd: 0.04
+        beta_2:
+            T: 90
+            lr : 0.099
+            lambd: 0.31
+    testing_louvain:
+      tau_0.5:
+        beta_0.5:
+            T: 70
+            lr : 0.094
+            lambd: 0.78
+        beta_1:
+            T: 80
+            lr : 0.085
+            lambd: 0.57
+        beta_2:
+            T: 80
+            lr : 0.094
+            lambd: 0.21
+    testing_walktrap:
+      tau_0.5:
+        beta_0.5:
+            T: 60
+            lr : 0.099
+            lambd: 0.65
+        beta_1:
+            T: 80
+            lr : 0.084
+            lambd: 0.61
+        beta_2:
+            T: 90
+            lr : 0.075
+            lambd: 0.45
 
 words:
-  evader:
-    T: 100
-    u: 10
-    lambd: 1
-    lr: 0.01
-    dist_f: frobenius_dist
-    budget_factor: 1
-    tau: 0.5
-    attention: True
-    reinitialization: True
+  training_greedy:
+    testing_greedy:
+      tau_0.5:
+        beta_0.5:
+            T: 80
+            lr : 0.07
+            lambd: 0.81
+        beta_1:
+            T: 90
+            lr : 0.019
+            lambd: 0.63
+        beta_2:
+            T: 90
+            lr : 0.082
+            lambd: 0.99
+    testing_louvain:
+      tau_0.5:
+        beta_0.5:
+            T: 20
+            lr : 0.0053
+            lambd: 0.81
+        beta_1:
+            T: 60
+            lr : 0.054
+            lambd: 0.81
+        beta_2:
+            T: 30
+            lr : 0.039
+            lambd: 0.77
+    testing_walktrap:
+      tau_0.5:
+        beta_0.5:
+            T: 90
+            lr : 0.071
+            lambd: 0.36
+        beta_1:
+            T: 90
+            lr : 0.086
+            lambd: 0.02
+        beta_2:
+            T: 60
+            lr : 0.096
+            lambd: 0.003
 
 vote:
   evader:
