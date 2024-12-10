@@ -50,8 +50,8 @@ if __name__ == "__main__":
     ]
     detection_algs = [
         DetectionAlgorithmsNames.GRE.value,
-        DetectionAlgorithmsNames.LOUV.value,
-        DetectionAlgorithmsNames.WALK.value,
+        #DetectionAlgorithmsNames.LOUV.value,
+        #DetectionAlgorithmsNames.WALK.value,
     ]
 
     editable_HyperParams.seed = int(time.time())
@@ -97,7 +97,8 @@ if __name__ == "__main__":
                 community_betas = [1, 3, 5, 10]
                 # Beta for the node hiding task is a multiplier of mean degree of the
                 # the graph
-                node_betas = [0.5, 1, 2]
+                #node_betas = [0.5, 1, 2]
+                node_betas = [2]
 
                 # Initialize the test class
                 node_hiding = NodeHiding(agent=agent, model_path=model_path, dcmh_config=cfg)

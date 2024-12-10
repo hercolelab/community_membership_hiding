@@ -14,62 +14,62 @@ karate:
     testing_greedy:
       tau_0.5:
         beta_0.5:
-            T: 80
-            lr : 0.097
-            lambd: 0.29
+            T: 100
+            lr : 0.082
+            lambd: 0.32
         beta_1:
-            T: 70
-            lr : 0.099
-            lambd: 0.04
+            T: 100
+            lr : 0.11
+            lambd: 0.178
         beta_2:
             T: 90
-            lr : 0.099
-            lambd: 0.31
+            lr : 0.061
+            lambd: 1.18
     testing_louvain:
       tau_0.5:
         beta_0.5:
-            T: 70
-            lr : 0.094
-            lambd: 0.78
+            T: 30
+            lr : 0.165
+            lambd: 0.64
         beta_1:
-            T: 80
-            lr : 0.085
-            lambd: 0.57
+            T: 70
+            lr : 0.17
+            lambd: 0.82
         beta_2:
-            T: 80
-            lr : 0.094
-            lambd: 0.21
+            T: 70
+            lr : 0.14
+            lambd: 0.03
     testing_walktrap:
       tau_0.5:
         beta_0.5:
-            T: 60
-            lr : 0.099
-            lambd: 0.65
-        beta_1:
-            T: 80
-            lr : 0.084
-            lambd: 0.61
-        beta_2:
             T: 90
             lr : 0.075
-            lambd: 0.45
+            lambd: 1.97
+        beta_1:
+            T: 100
+            lr : 0.186
+            lambd: 0.94
+        beta_2:
+            T: 100
+            lr : 0.248
+            lambd: 1.95
 
 words:
   training_greedy:
     testing_greedy:
       tau_0.5:
         beta_0.5:
-            T: 80
-            lr : 0.07
-            lambd: 0.81
+            T: 100
+            lr : 0.068
+            lambd: 1.86
         beta_1:
-            T: 90
-            lr : 0.019
-            lambd: 0.63
+            T: 80
+            lr : 0.028
+            lambd: 1.59
         beta_2:
-            T: 90
-            lr : 0.082
-            lambd: 0.99
+            T: 60
+            lr : 0.035
+            lambd: 1.99
     testing_louvain:
       tau_0.5:
         beta_0.5:
