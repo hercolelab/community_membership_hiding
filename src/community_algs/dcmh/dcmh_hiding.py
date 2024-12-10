@@ -19,24 +19,41 @@ class DcmhHiding():
     def __init__(
         self, 
         env: GraphEnvironment, 
+        cfg: DictConfig,
         steps: int,
+        graph: ig.Graph,
+        old_communities: List[List[int]],
     ):
         self.env = env
-        self.graph = self.env.original_graph
+        self.cfg = cfg
+        self.graph = graph
         self.detection_alg = self.env.detection
+        self.old_communities = old_communities
         self.budget = steps
+
+        # Parameters
+        self.T, self.lr, self.u, self.lambd, self.beta, self.tau, self.attention, self.reinit = self.get_evader_parameters(cfg)
+        seed = editable_HyperParams.seed
+
+        # Variables
+        self.neighbors = torch.LongTensor(self.graph.neighbors(self.u))
+        self.a_u = torch.zeros(self.graph.vcount(), dtype=torch.int)
+        self.a_u[self.neighbors] = 1
+        self.fixed_nodes = torch.LongTensor([v for v in self.neighbors if self.graph.degree(v) == 1]+[v for v in self.neighbors if self.graph.degree(self.u) == 1])
+        
+        ## Candidate list for the loss
+        self.v_opt = self.candidate_list(self.graph,self.old_communities,self.u,self.attention)
+        self.v_opt[self.u] = torch.Tensor([0])
+        self.v_opt[self.fixed_nodes] = torch.Tensor([1])
+
     ############################################################################
     #                                EVADING                                   #
     ############################################################################
 
-    def comm_evading(self, cfg: DictConfig) -> Tuple[ig.Graph, int]:
-
-        # Parameters
-        T, lr, u, lambd, beta, tau, attention, reinit = self.get_evader_parameters(cfg)
-        seed = editable_HyperParams.seed
+    def comm_evading(self) -> Tuple[ig.Graph, int]:
 
         # Training detection algorithm
-        da_train = CommunityDetectionAlgorithm(cfg["train_alg"])
+        da_train = CommunityDetectionAlgorithm(self.cfg["train_alg"])
 
         # Evasion parameters
         t = 0
@@ -44,31 +61,22 @@ class DcmhHiding():
         goal = 0
 
         # Network
-        G = da_train.networkx_to_igraph(self.graph)
+        G = self.graph
         n_nodes = G.vcount()
         g_prime = G.copy()
-        neighbors = torch.LongTensor(G.neighbors(u))
-        a_u = torch.zeros(G.vcount(), dtype=torch.int)
-        a_u[neighbors] = 1
+        a_u = self.a_u
         history = [a_u]
-        fixed_nodes = torch.LongTensor([v for v in neighbors if G.degree(v) == 1]+[v for v in neighbors if G.degree(u) == 1])
         edges_changed = {}
         #Communities
-        old_communities = da_train.compute_community(G, dcmh=True)
-        old_community_u = self.get_new_community(old_communities, u)
-        new_communities = copy.deepcopy(old_communities)
+        old_community_u = self.get_new_community(self.old_communities, self.u)
+        new_communities = copy.deepcopy(self.old_communities)
 
         #Perturbation vector
         """We generate random vector s.t. threshold(tanh(x_hat)) = 0 """
-        x_hat, optimizer = self.initialize_perturbation_vector(n_nodes, lr, u, fixed_nodes)
-
-        # Candidate list for the loss
-        v_opt = self.candidate_list(G,old_communities,u,attention)
-        v_opt[u] = torch.Tensor([0])
-        v_opt[fixed_nodes] = torch.Tensor([1])
+        x_hat, optimizer = self.initialize_perturbation_vector(n_nodes, self.lr, self.u, self.fixed_nodes)
 
         #EVASION LOOP
-        while goal==0 and t < T:
+        while goal==0 and t < self.T:
             
             #Perturbation update
             p_hat = torch.tanh(x_hat)
@@ -76,29 +84,29 @@ class DcmhHiding():
             a_new = self.clamp(torch.Tensor(a_u + p))
             history.append(a_new)
 
-            edges_changed, n_changes = self.get_changes(history[-2], history[-1], u)
+            edges_changed, n_changes = self.get_changes(history[-2], history[-1], self.u)
             if n_changes > 0:
                 budget_used += n_changes
                 edge_list = g_prime.get_edgelist()
                 updated_edge_list = self.update_edge_list(edge_list,edges_changed)
                 g_prime = ig.Graph(n=G.vcount(), edges=updated_edge_list)
                 new_communities = da_train.compute_community(g_prime, dcmh=True)
-                new_community_u = self.get_new_community(new_communities, u)
-                goal = self.check_goal(old_community_u,new_community_u,u,tau)
+                new_community_u = self.get_new_community(new_communities, self.u)
+                goal = self.check_goal(old_community_u,new_community_u,self.u,self.tau)
                 n_changes = 0 #reset changes
                 
 
-            l_decept = self.loss_decept(a_u, p_hat, v_opt, self.frobenius_dist)
+            l_decept = self.loss_decept(a_u, p_hat, self.v_opt, self.frobenius_dist)
             l_dist = self.loss_dist(p_hat)
-            loss = l_decept + lambd * l_dist
+            loss = l_decept + self.lambd * l_dist
             optimizer.zero_grad()
             loss.backward()
             optimizer.step()
             t += 1
             
             if budget_used > self.budget:
-                if reinit: 
-                    x_hat, optimizer = self.initialize_perturbation_vector(n_nodes, lr, u, fixed_nodes) 
+                if self.reinit: 
+                    x_hat, optimizer = self.initialize_perturbation_vector(n_nodes, self.lr, self.u, self.fixed_nodes) 
                     # Restore parameters for evasion loop
                     goal = 0 
                     budget_used=0
@@ -109,8 +117,8 @@ class DcmhHiding():
                     break
         
             if budget_used == self.budget and goal==0:
-                if reinit: 
-                    x_hat, optimizer = self.initialize_perturbation_vector(n_nodes, lr, u, fixed_nodes)
+                if self.reinit: 
+                    x_hat, optimizer = self.initialize_perturbation_vector(n_nodes, self.lr, self.u, self.fixed_nodes)
                     # Restore parameters for evasion loop
                     budget_used=0
                     history.append(a_u)

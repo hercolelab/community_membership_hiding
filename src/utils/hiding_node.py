@@ -44,6 +44,7 @@ class NodeHiding:
     ) -> None:
         self.agent = agent
         self.original_graph = agent.env.original_graph.copy()
+        self.ig_original_graph = agent.env.detection.networkx_to_igraph(self.original_graph)
         self.model_path = model_path
         self.env_name = agent.env.env_name
         self.detection_alg = agent.env.detection_alg
@@ -140,7 +141,10 @@ class NodeHiding:
         # DCMH method
         self.dcmh_hiding = DcmhHiding(
             env=self.agent.env,
-            steps=self.edge_budget
+            cfg=self.dcmh_config,
+            steps=self.edge_budget,
+            graph = self.ig_original_graph,
+            old_communities=self.community_structure,
         )       
 
         # Baseline algorithms
@@ -326,7 +330,7 @@ class NodeHiding:
         """
 
         # Run the DCMH method
-        dcmh_graph, steps = self.dcmh_hiding.comm_evading(self.dcmh_config)
+        dcmh_graph, steps = self.dcmh_hiding.comm_evading()
 
         # Compute the new community structure
         dcmh_communities = self.dcmh_hiding.detection_alg.compute_community(dcmh_graph, dcmh=True)
