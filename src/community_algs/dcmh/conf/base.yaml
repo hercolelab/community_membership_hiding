@@ -73,41 +73,74 @@ words:
     testing_louvain:
       tau_0.5:
         beta_0.5:
-            T: 20
-            lr : 0.0053
-            lambd: 0.81
+            T: 80
+            lr : 0.073
+            lambd: 0.098
         beta_1:
-            T: 60
-            lr : 0.054
-            lambd: 0.81
+            T: 50
+            lr : 0.046
+            lambd: 1.65
         beta_2:
             T: 30
-            lr : 0.039
-            lambd: 0.77
+            lr : 0.134
+            lambd: 0.69
     testing_walktrap:
       tau_0.5:
         beta_0.5:
-            T: 90
-            lr : 0.071
-            lambd: 0.36
+            T: 70
+            lr : 0.058
+            lambd: 0.397
         beta_1:
-            T: 90
-            lr : 0.086
-            lambd: 0.02
+            T: 80
+            lr : 0.0799
+            lambd: 0.09
         beta_2:
             T: 60
-            lr : 0.096
-            lambd: 0.003
+            lr : 0.12
+            lambd: 0.15
 
 vote:
-  evader:
-    T: 100
-    u: 10
-    lambd: 10
-    lr: 0.005
-    dist_f: frobenius_dist
-    budget_factor: 1
-    tau: 0.5
-    attention: True
-    reinitialization: True
+  training_greedy:
+    testing_greedy:
+      tau_0.5:
+        beta_0.5:
+            T: 190
+            lr : 0.0012
+            lambd: 0.45
+        beta_1:
+            T: 80
+            lr : 0.028
+            lambd: 1.59
+        beta_2:
+            T: 60
+            lr : 0.035
+            lambd: 1.99
+    testing_louvain:
+      tau_0.5:
+        beta_0.5:
+            T: 80
+            lr : 0.073
+            lambd: 0.098
+        beta_1:
+            T: 50
+            lr : 0.046
+            lambd: 1.65
+        beta_2:
+            T: 30
+            lr : 0.134
+            lambd: 0.69
+    testing_walktrap:
+      tau_0.5:
+        beta_0.5:
+            T: 70
+            lr : 0.058
+            lambd: 0.397
+        beta_1:
+            T: 80
+            lr : 0.0799
+            lambd: 0.09
+        beta_2:
+            T: 60
+            lr : 0.12
+            lambd: 0.15
 

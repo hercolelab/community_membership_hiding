@@ -284,35 +284,43 @@ class DcmhHiding():
 
         #Centrality score -- attention1
         centrality = np.array(G.betweenness(directed=False))
+
         ranks = rankdata(centrality, method='average')
         att1 = (ranks - 1) / (len(ranks) - 1)
+
         
         #Degree score -- attention2
         degrees = np.array(G.degree())
+
         ranks = rankdata(degrees, method='average')
         att2 = (ranks - 1) / (len(ranks) - 1)
 
-        #Inter-intra community score -- attention3
+
+        #Intra community score -- attention3
         att3a = np.zeros(G.vcount())
         for c in communities.communities:
-            subgraph = G.subgraph(c)
-            degrees = np.array(subgraph.degree())
-            ranks = rankdata(degrees, method='average')
-            scaled_degrees = (ranks - 1) / (len(ranks) - 1) 
-            for node, scaled_degree in zip(c, scaled_degrees):
-                att3a[node] = scaled_degree
+            if len(c) > 1:
+                subgraph = G.subgraph(c)
+                degrees = np.array(subgraph.degree())
+                ranks = rankdata(degrees, method='average')
+                scaled_degrees = (ranks - 1) / (len(ranks) - 1) 
+                for node, scaled_degree in zip(c, scaled_degrees):
+                    att3a[node] = scaled_degree
             
-
+        #Inter community score -- attention3
         att3b = np.zeros(G.vcount())
         community_nodes = self.get_new_community(communities, u)
         inter_c_nodes = sorted(set(range(G.vcount())) - set(community_nodes) - set(G.neighbors(u)))
-        subgraph = G.subgraph(inter_c_nodes)
-        degrees = np.array(subgraph.degree())
-        ranks = rankdata(degrees, method='average')
-        scaled_degrees = (ranks - 1) / (len(ranks) - 1) 
-        for node, scaled_degree in zip(inter_c_nodes, scaled_degrees):
-            att3b[node] = scaled_degree
+        if len(inter_c_nodes) > 2:
+            subgraph = G.subgraph(inter_c_nodes)
+            degrees = np.array(subgraph.degree())
+            ranks = rankdata(degrees, method='average')
+            scaled_degrees = (ranks - 1) / (len(ranks) - 1) 
+            for node, scaled_degree in zip(inter_c_nodes, scaled_degrees):
+                att3b[node] = scaled_degree
+
         att3 = (att3a + att3b)/2
+
 
         #Attention by aggregation
         return (att1 + att2 + att3)/3
@@ -349,6 +357,7 @@ class DcmhHiding():
         x_hat = (2*torch.rand(n_nodes) - 1)*0.5
         x_hat[u] = torch.Tensor([0])
         x_hat[fixed_nodes] = torch.Tensor([0])
+
         """
         Possibility to add memory property on the algorithm
         --- TO THINK ABOUT IT ---
