@@ -41,7 +41,7 @@ if __name__ == "__main__":
 
     datasets = [
         #FilePaths.KAR.value,
-        FilePaths.WORDS.value,
+        #FilePaths.WORDS.value,
         #FilePaths.VOTE.value,
         # FilePaths.NETS.value,
         #FilePaths.POW.value,
@@ -49,8 +49,8 @@ if __name__ == "__main__":
         # FilePaths.ASTR.value,
     ]
     detection_algs = [
-        #DetectionAlgorithmsNames.GRE.value,
-        DetectionAlgorithmsNames.LOUV.value,
+        DetectionAlgorithmsNames.GRE.value,
+        #DetectionAlgorithmsNames.LOUV.value,
         #DetectionAlgorithmsNames.WALK.value,
     ]
 
@@ -97,8 +97,7 @@ if __name__ == "__main__":
                 community_betas = [1, 3, 5, 10]
                 # Beta for the node hiding task is a multiplier of mean degree of the
                 # the graph
-                #node_betas = [0.5, 1, 2]
-                node_betas = [1]
+                node_betas = [0.5, 1, 2]
 
                 # Initialize the test class
                 node_hiding = NodeHiding(agent=agent, model_path=model_path, dcmh_config=cfg)

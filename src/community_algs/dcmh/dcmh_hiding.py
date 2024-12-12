@@ -304,8 +304,7 @@ class DcmhHiding():
                 degrees = np.array(subgraph.degree())
                 ranks = rankdata(degrees, method='average')
                 scaled_degrees = (ranks - 1) / (len(ranks) - 1) 
-                for node, scaled_degree in zip(c, scaled_degrees):
-                    att3a[node] = scaled_degree
+                att3a[c] = scaled_degrees
             
         #Inter community score -- attention3
         att3b = np.zeros(G.vcount())
@@ -316,8 +315,7 @@ class DcmhHiding():
             degrees = np.array(subgraph.degree())
             ranks = rankdata(degrees, method='average')
             scaled_degrees = (ranks - 1) / (len(ranks) - 1) 
-            for node, scaled_degree in zip(inter_c_nodes, scaled_degrees):
-                att3b[node] = scaled_degree
+            att3b[inter_c_nodes] = scaled_degrees
 
         att3 = (att3a + att3b)/2
 
@@ -462,17 +460,22 @@ class DcmhHiding():
         count
             Number of changes in the adjacency vector.
         """
+        diff = a1 != a2
+        indices = torch.nonzero(diff).flatten()
+        
         changes = {"added": [], "removed": []}
-        count = 0
+        count = len(indices)
         done = set()
-        for i in range(len(a1)):
-            if a1[i] != a2[i] and ((min(u, i), max(u, i))) not in done:
-                count += 1
-                done.add((min(u, i), max(u, i)))
+        
+        for i in indices:
+            edge = (min(u, i.item()), max(u, i.item()))
+            if edge not in done:
+                done.add(edge)
                 if a1[i] == 1:
-                    changes["removed"].append((min(u, i), max(u, i)))
+                    changes["removed"].append(edge)
                 else:
-                    changes["added"].append((min(u, i), max(u, i)))
+                    changes["added"].append(edge)
+        
         return changes, count
 
     def update_edge_list(self, edge_list, changes):
@@ -493,10 +496,11 @@ class DcmhHiding():
             Updated list of edges in the graph.
         """
         edge_set = set(edge_list)
-        for edge in changes["removed"]:
-            edge_set.remove(edge)
-        for edge in changes["added"]:
-            edge_set.add(edge)
+        removed_set = set(changes["removed"])
+        added_set = set(changes["added"])
+
+        edge_set.difference_update(removed_set)
+        edge_set.update(added_set)
 
         updated_edge_list = list(edge_set)
         return updated_edge_list

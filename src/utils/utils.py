@@ -530,7 +530,9 @@ class Utils:
                 data=df,
                 x="Algorithm",
                 y=metric.capitalize(),
-                palette=sns.color_palette("Set1"),
+                palette=sns.color_palette("Set2"),
+                edgecolor="black",  
+                linewidth=0.5
             )
             plt.title(
                 f"Evaluation on {log['env']['dataset']} graph with {log['env']['detection_alg']} algorithm"
