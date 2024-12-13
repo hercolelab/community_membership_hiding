@@ -548,3 +548,123 @@ class Utils:
                 plt.ylabel(metric.capitalize())
             plt.savefig(f"{files_path}/{log_name}_{metric}.png")
             plt.clf()
+    
+    @staticmethod
+    def plot_f1_all_datasets(
+            datasets: List[str], 
+            detection_algs: List[str],
+            taus: List[float],
+            betas: List[float]
+            ):
+        """
+        Plot the f1 scores of the evaluation on all the datasets and detection algorithms
+
+        Parameters
+        ----------
+        datasets : List[str]
+            List of datasets
+        detection_algs : List[str]
+            List of detection algorithms
+        taus : List[float]
+            List of tau values
+        betas : List[float]
+            List of beta values
+        """
+
+        datasets_names = {
+            FilePaths.KAR.value: "kar",
+            FilePaths.WORDS.value: "words",
+            FilePaths.VOTE.value: "vote",
+            FilePaths.NETS.value: "nets",
+            FilePaths.POW.value: "pow",
+            FilePaths.FB_75.value: "fb",
+            FilePaths.ASTR.value: "astr",
+        }
+
+        save_path = "test/all_datasets/f1_score/"
+        Utils.check_dir(save_path)
+        log_name = "evaluation_node_hiding"
+
+        agent_renamed = "DRL-Agent"
+        centrality_renamed = "Betweenness"
+        dcmh_renamed = "DCMH (ours)"
+
+        evading_algs=["Agent","DCMH","Random","Degree","Centrality","Roam","Greedy"]
+        metric = "F1 score"
+
+        datasets = [datasets_names[dataset] for dataset in datasets]
+
+        f1_dict = {}
+        for dataset in datasets:
+            f1_dict[dataset] = {}
+            for detection_alg in detection_algs:
+                f1_dict[dataset][detection_alg] = {}
+                for tau in taus:
+                    f1_dict[dataset][detection_alg][f"tau_{tau}"] = {}
+                    for beta in betas:
+                        f1_dict[dataset][detection_alg][f"tau_{tau}"][f"beta_{beta}"] = {}
+                        json_path = f"test/{dataset}/{detection_alg}/node_hiding/tau_{tau}/beta_{beta}/{log_name}.json"
+                        with open(json_path, "r") as f:
+                            log = json.load(f)
+                        for alg in evading_algs:
+                            f1_dict[dataset][detection_alg][f"tau_{tau}"][f"beta_{beta}"][alg] = [
+                                (2 * x * y) / (x + y)
+                                for x, y in zip(log[alg]["goal"], log[alg]["nmi"])
+                            ]
+
+        x=1
+
+        for detection_alg in detection_algs:
+            for tau in taus:
+                for beta in betas:
+                    plot_data = []
+                    for dataset in datasets:
+                        df = pd.DataFrame(f1_dict[dataset][detection_alg][f"tau_{tau}"][f"beta_{beta}"])
+                        plot_data.append(df)
+                    df = pd.concat(plot_data,axis=1)
+                    # in algs list replace "Agent" with "DRL-Agent"
+                    evading_algs = [agent_renamed if alg == "Agent" else alg for alg in evading_algs]
+                    # in algs list replace "Centrality" with "Betweenness"
+                    evading_algs = [centrality_renamed if alg == "Centrality" else alg for alg in evading_algs]
+                    # in algs list replace "DCMH" with "DCMH (ours)"
+                    evading_algs = [dcmh_renamed if alg == "DCMH" else alg for alg in evading_algs]
+                    df.columns = pd.MultiIndex.from_product([datasets, evading_algs])
+                    # Melt the dataframe
+                    df = df.melt(var_name=["Dataset", "Algorithm"], value_name=metric)
+
+
+                    sns.set_theme(style="darkgrid")
+                    palette = sns.set_palette("Set2")
+                    g = sns.catplot(
+                        data=df,
+                        kind="bar",
+                        x="Dataset",
+                        y=metric,
+                        hue="Algorithm",
+                        aspect=2,
+                        palette=palette,
+                        errorbar="ci",
+                        # errorbar=df_confidence_binary_test,
+                    )
+                    g.set_axis_labels("Datasets", f"Mean {metric.capitalize()}")
+                    sns.move_legend(g, "upper left", bbox_to_anchor=(0.75, 0.8), frameon=False)
+                    g.set_xticklabels(rotation=45, ha="center")
+                    save_fig_path = f"{save_path}/{detection_alg}/tau_{tau}/beta_{beta}"
+                    Utils.check_dir(save_fig_path)
+                    g.savefig(
+                        f"{save_fig_path}/f1_score_grouped.png",
+                        bbox_inches="tight",
+                        dpi=300,
+                    )
+
+
+
+
+
+
+
+
+
+
+
+

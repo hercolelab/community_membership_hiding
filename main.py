@@ -26,7 +26,7 @@ def get_args():
     return parser.parse_args()
 
 dataset_names = {
-    FilePaths.KAR.value: "karate",
+    FilePaths.KAR.value: "kar",
     FilePaths.WORDS.value: "words",
     FilePaths.VOTE.value: "vote",
     FilePaths.NETS.value: "nets",
@@ -42,7 +42,7 @@ if __name__ == "__main__":
     datasets = [
         #FilePaths.KAR.value,
         #FilePaths.WORDS.value,
-        #FilePaths.VOTE.value,
+        FilePaths.VOTE.value,
         # FilePaths.NETS.value,
         #FilePaths.POW.value,
         #FilePaths.FB_75.value,
@@ -50,8 +50,8 @@ if __name__ == "__main__":
     ]
     detection_algs = [
         DetectionAlgorithmsNames.GRE.value,
-        #DetectionAlgorithmsNames.LOUV.value,
-        #DetectionAlgorithmsNames.WALK.value,
+        DetectionAlgorithmsNames.LOUV.value,
+        DetectionAlgorithmsNames.WALK.value,
     ]
 
     editable_HyperParams.seed = int(time.time())
@@ -124,7 +124,18 @@ if __name__ == "__main__":
                 #     community_hiding.set_parameters(beta=beta, tau=0.3)
                 #     community_hiding.run_experiment()
                 # print("* " * 50)
+
             else:
                 raise ValueError(
                     "Invalid mode. Please choose between 'train' and 'test'"
                 )
+
+
+    Utils.plot_f1_all_datasets(
+        datasets= [FilePaths.KAR.value,FilePaths.WORDS.value, FilePaths.VOTE.value],
+        detection_algs= [ DetectionAlgorithmsNames.GRE.value, DetectionAlgorithmsNames.LOUV.value,DetectionAlgorithmsNames.WALK.value],
+        taus=[0.5],
+        betas=[0.5,1,2],
+    )
+
+            

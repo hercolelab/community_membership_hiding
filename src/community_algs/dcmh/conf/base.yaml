@@ -105,42 +105,88 @@ vote:
       tau_0.5:
         beta_0.5:
             T: 190
-            lr : 0.0012
-            lambd: 0.45
+            lr : 0.009
+            lambd: 9.93
         beta_1:
-            T: 80
-            lr : 0.028
-            lambd: 1.59
+            T: 170
+            lr : 0.0099
+            lambd: 9.83
         beta_2:
-            T: 60
-            lr : 0.035
-            lambd: 1.99
+            T: 180
+            lr : 0.0058
+            lambd: 9.78
     testing_louvain:
       tau_0.5:
         beta_0.5:
-            T: 80
-            lr : 0.073
-            lambd: 0.098
+            T: 60
+            lr : 0.0081
+            lambd: 6.11
         beta_1:
-            T: 50
-            lr : 0.046
-            lambd: 1.65
+            T: 40
+            lr : 0.0088
+            lambd: 8.50
         beta_2:
-            T: 30
-            lr : 0.134
-            lambd: 0.69
+            T: 130
+            lr : 0.056
+            lambd: 7.27
     testing_walktrap:
       tau_0.5:
         beta_0.5:
-            T: 70
-            lr : 0.058
-            lambd: 0.397
+            T: 190
+            lr : 0.0033
+            lambd: 0.26
         beta_1:
-            T: 80
-            lr : 0.0799
-            lambd: 0.09
+            T: 140
+            lr : 0.055
+            lambd: 4.9
         beta_2:
-            T: 60
-            lr : 0.12
-            lambd: 0.15
+            T: 100
+            lr : 0.058
+            lambd: 5.57
+
+
+pow:
+  training_greedy:
+    testing_greedy:
+      tau_0.5:
+        beta_0.5:
+            T: 0
+            lr : 0
+            lambd: 0
+        beta_1:
+            T: 0
+            lr : 0
+            lambd: 0
+        beta_2:
+            T: 0
+            lr : 0
+            lambd: 0
+    testing_louvain:
+      tau_0.5:
+        beta_0.5:
+            T: 0
+            lr : 0
+            lambd: 0
+        beta_1:
+            T: 0
+            lr : 0
+            lambd: 0
+        beta_2:
+            T: 0
+            lr : 0
+            lambd: 0
+    testing_walktrap:
+      tau_0.5:
+        beta_0.5:
+            T: 0
+            lr : 0
+            lambd: 0
+        beta_1:
+            T: 0
+            lr : 0
+            lambd: 0
+        beta_2:
+            T: 0
+            lr : 0
+            lambd: 0
 
