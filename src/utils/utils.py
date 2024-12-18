@@ -589,7 +589,7 @@ class Utils:
         centrality_renamed = "Betweenness"
         dcmh_renamed = "DCMH (ours)"
 
-        evading_algs=["Agent","DCMH","Random","Degree","Centrality","Roam","Greedy"]
+        evading_algs=["DCMH","Agent","Random","Degree","Centrality","Roam","Greedy"]
         metric = "F1 score"
 
         datasets = [datasets_names[dataset] for dataset in datasets]
@@ -727,6 +727,10 @@ class Utils:
                             }
 
         x_values = [dataset_sizes[dataset] for dataset in datasets]
+        palette = sns.color_palette("Set2")
+        
+        dcmh_color = palette[0]
+        agent_color = palette[1]
 
         for detection_alg in detection_algs:
             for tau in taus:
@@ -740,11 +744,12 @@ class Utils:
                     time_dcmh_mean = [dict["DCMH"]["mean"] for dict in plot_data]
                     time_dcmh_std = [dict["DCMH"]["std"] for dict in plot_data]
 
+                    sns.set_theme(style="darkgrid")
                     plt.figure(figsize=(14, 10))
-                    plt.errorbar(x_values, time_dcmh_mean, yerr=time_dcmh_std, fmt='o', label='DCMH (ours)', capsize=5, color='blue')
-                    plt.plot(x_values, time_dcmh_mean, 'r--',color='blue', linewidth=0.5, alpha=0.5)
-                    plt.errorbar(x_values, time_agent_mean, yerr=time_agent_std, fmt='o', label='DRL-Agent', capsize=5, color='orange')
-                    plt.plot(x_values, time_agent_mean, 'r--', color='orange',linewidth=0.5, alpha=0.5)
+                    plt.errorbar(x_values, time_dcmh_mean, yerr=time_dcmh_std, fmt='o', label='DCMH (ours)', markersize=10, capsize=7, color=dcmh_color)
+                    plt.plot(x_values, time_dcmh_mean, 'r--',color=dcmh_color, linewidth=0.5, alpha=0.5)
+                    plt.errorbar(x_values, time_agent_mean, yerr=time_agent_std, fmt='o', label='DRL-Agent', markersize=10, capsize=7, color=agent_color)
+                    plt.plot(x_values, time_agent_mean, 'r--', color=agent_color,linewidth=0.5, alpha=0.5)
                     plt.xscale('log')
                     plt.xlabel('Network size',fontsize=20)
                     plt.ylabel('Evading Time (s)',fontsize=20)
