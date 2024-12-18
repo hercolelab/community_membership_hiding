@@ -42,16 +42,16 @@ if __name__ == "__main__":
     datasets = [
         #FilePaths.KAR.value,
         #FilePaths.WORDS.value,
-        FilePaths.VOTE.value,
+        #FilePaths.VOTE.value,
         # FilePaths.NETS.value,
         #FilePaths.POW.value,
         #FilePaths.FB_75.value,
         # FilePaths.ASTR.value,
     ]
     detection_algs = [
-        DetectionAlgorithmsNames.GRE.value,
-        DetectionAlgorithmsNames.LOUV.value,
-        DetectionAlgorithmsNames.WALK.value,
+        #DetectionAlgorithmsNames.GRE.value,
+        #DetectionAlgorithmsNames.LOUV.value,
+        #DetectionAlgorithmsNames.WALK.value,
     ]
 
     editable_HyperParams.seed = int(time.time())
@@ -98,6 +98,7 @@ if __name__ == "__main__":
                 # Beta for the node hiding task is a multiplier of mean degree of the
                 # the graph
                 node_betas = [0.5, 1, 2]
+                #node_betas = [2]
 
                 # Initialize the test class
                 node_hiding = NodeHiding(agent=agent, model_path=model_path, dcmh_config=cfg)
@@ -131,11 +132,21 @@ if __name__ == "__main__":
                 )
 
 
-    Utils.plot_f1_all_datasets(
-        datasets= [FilePaths.KAR.value,FilePaths.WORDS.value, FilePaths.VOTE.value],
-        detection_algs= [ DetectionAlgorithmsNames.GRE.value, DetectionAlgorithmsNames.LOUV.value,DetectionAlgorithmsNames.WALK.value],
-        taus=[0.5],
-        betas=[0.5,1,2],
-    )
+    save_f1 = False
+    if save_f1:
+        Utils.plot_f1_all_datasets(
+            datasets= [FilePaths.KAR.value,FilePaths.WORDS.value, FilePaths.VOTE.value, FilePaths.POW.value],
+            detection_algs= [ DetectionAlgorithmsNames.GRE.value, DetectionAlgorithmsNames.LOUV.value,DetectionAlgorithmsNames.WALK.value],
+            taus=[0.5],
+            betas=[0.5,1,2],
+        )
+    save_time = True
+    if save_time:
+        Utils.plot_time_all_datasets(
+            datasets= [FilePaths.KAR.value,FilePaths.WORDS.value, FilePaths.VOTE.value, FilePaths.POW.value],
+            detection_algs= [ DetectionAlgorithmsNames.GRE.value, DetectionAlgorithmsNames.LOUV.value,DetectionAlgorithmsNames.WALK.value],
+            taus=[0.5],
+            betas=[0.5,1,2],
+        )
 
             

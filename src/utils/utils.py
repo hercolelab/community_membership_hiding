@@ -1,6 +1,6 @@
 from enum import Enum
 from typing import List, Tuple
-from statistics import mean
+from statistics import mean, stdev
 
 # from src.environment.graph_env import GraphEnvironment
 
@@ -612,7 +612,6 @@ class Utils:
                                 for x, y in zip(log[alg]["goal"], log[alg]["nmi"])
                             ]
 
-        x=1
 
         for detection_alg in detection_algs:
             for tau in taus:
@@ -646,9 +645,9 @@ class Utils:
                         errorbar="ci",
                         # errorbar=df_confidence_binary_test,
                     )
-                    g.set_axis_labels("Datasets", f"Mean {metric.capitalize()}")
-                    sns.move_legend(g, "upper left", bbox_to_anchor=(0.75, 0.8), frameon=False)
-                    g.set_xticklabels(rotation=45, ha="center")
+                    g.set_axis_labels("Datasets", f"Mean {metric.capitalize()}", fontsize=15)
+                    sns.move_legend(g, "upper right", bbox_to_anchor=(1, 0.7), frameon=False)
+                    g.set_xticklabels(rotation=45, ha="center", fontsize=18)
                     save_fig_path = f"{save_path}/{detection_alg}/tau_{tau}/beta_{beta}"
                     Utils.check_dir(save_fig_path)
                     g.savefig(
@@ -656,6 +655,108 @@ class Utils:
                         bbox_inches="tight",
                         dpi=300,
                     )
+
+                    
+    @staticmethod
+    def plot_time_all_datasets(
+            datasets: List[str], 
+            detection_algs: List[str],
+            taus: List[float],
+            betas: List[float]
+            ):
+        """
+        Plot the time of the evaluation on all the datasets and detection algorithms
+
+        Parameters
+        ----------
+        datasets : List[str]
+            List of datasets
+        detection_algs : List[str]
+            List of detection algorithms
+        taus : List[float]
+            List of tau values
+        betas : List[float]
+            List of beta values
+        """
+
+        datasets_names = {
+            FilePaths.KAR.value: "kar",
+            FilePaths.WORDS.value: "words",
+            FilePaths.VOTE.value: "vote",
+            FilePaths.POW.value: "pow",
+            FilePaths.FB_75.value: "fb",
+        }
+
+        dataset_sizes = {
+            "kar": 34,
+            "words": 112,
+            "vote": 889,
+            "pow": 4941,
+            "fb": 6386,
+        }
+
+        save_path = "test/all_datasets/time/"
+        Utils.check_dir(save_path)
+        log_name = "evaluation_node_hiding"
+
+        agent_renamed = "DRL-Agent"
+        centrality_renamed = "Betweenness"
+        dcmh_renamed = "DCMH (ours)"
+
+        evading_algs=["Agent","DCMH"]
+        metric = "Time"
+
+        datasets = [datasets_names[dataset] for dataset in datasets]
+
+        time_dict = {}
+        for dataset in datasets:
+            time_dict[dataset] = {}
+            for detection_alg in detection_algs:
+                time_dict[dataset][detection_alg] = {}
+                for tau in taus:
+                    time_dict[dataset][detection_alg][f"tau_{tau}"] = {}
+                    for beta in betas:
+                        time_dict[dataset][detection_alg][f"tau_{tau}"][f"beta_{beta}"] = {}
+                        json_path = f"test/{dataset}/{detection_alg}/node_hiding/tau_{tau}/beta_{beta}/{log_name}.json"
+                        with open(json_path, "r") as f:
+                            log = json.load(f)
+                        for alg in evading_algs:
+                            time_dict[dataset][detection_alg][f"tau_{tau}"][f"beta_{beta}"][alg] = {
+                                "mean": mean(log[alg]["time"]),
+                                "std": stdev(log[alg]["time"]),
+                            }
+
+        x_values = [dataset_sizes[dataset] for dataset in datasets]
+
+        for detection_alg in detection_algs:
+            for tau in taus:
+                for beta in betas:
+                    plot_data=[]
+                    for dataset in datasets:
+                        dict = time_dict[dataset][detection_alg][f"tau_{tau}"][f"beta_{beta}"]
+                        plot_data.append(dict)
+                    time_agent_mean = [dict["Agent"]["mean"] for dict in plot_data]
+                    time_agent_std = [dict["Agent"]["std"] for dict in plot_data]
+                    time_dcmh_mean = [dict["DCMH"]["mean"] for dict in plot_data]
+                    time_dcmh_std = [dict["DCMH"]["std"] for dict in plot_data]
+
+                    plt.figure(figsize=(14, 10))
+                    plt.errorbar(x_values, time_dcmh_mean, yerr=time_dcmh_std, fmt='o', label='DCMH (ours)', capsize=5, color='blue')
+                    plt.plot(x_values, time_dcmh_mean, 'r--',color='blue', linewidth=0.5, alpha=0.5)
+                    plt.errorbar(x_values, time_agent_mean, yerr=time_agent_std, fmt='o', label='DRL-Agent', capsize=5, color='orange')
+                    plt.plot(x_values, time_agent_mean, 'r--', color='orange',linewidth=0.5, alpha=0.5)
+                    plt.xscale('log')
+                    plt.xlabel('Network size',fontsize=20)
+                    plt.ylabel('Evading Time (s)',fontsize=20)
+                    #custom_labels = ["kar (34)", "words (0.11k)", "vote (0.89k)", "pow (4.9k)", "fb (6.3k)"]
+                    custom_labels = ["kar (0.03k)", "words (0.11k)", "vote (0.89k)", "pow (4.9k)"]
+                    plt.xticks(ticks=x_values, labels=custom_labels,rotation=45,ha="center", fontsize=15)
+                    plt.legend(fontsize=20)
+                    plt.grid(True)
+                    save_fig_path = f'{save_path}/{detection_alg}/tau_{tau}/beta_{beta}'
+                    Utils.check_dir(save_fig_path)
+                    plt.savefig(f'{save_fig_path}/evading_time_grouped.png', format='png', dpi=300, bbox_inches="tight") 
+
 
 
 

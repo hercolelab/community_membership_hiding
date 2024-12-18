@@ -9,7 +9,7 @@ u: 0
 tau: 0.5
 budget_factor: 1
 
-karate:
+kar:
   training_greedy:
     testing_greedy:
       tau_0.5:
@@ -150,43 +150,88 @@ pow:
     testing_greedy:
       tau_0.5:
         beta_0.5:
-            T: 0
-            lr : 0
-            lambd: 0
+            T: 120
+            lr : 0.0063
+            lambd: 21
         beta_1:
-            T: 0
-            lr : 0
-            lambd: 0
+            T: 200
+            lr : 0.0072
+            lambd: 18.5
         beta_2:
-            T: 0
-            lr : 0
-            lambd: 0
+            T: 260
+            lr : 0.0083
+            lambd: 0.39
     testing_louvain:
       tau_0.5:
         beta_0.5:
-            T: 0
-            lr : 0
-            lambd: 0
+            T: 270
+            lr : 0.0038
+            lambd: 8.97
         beta_1:
-            T: 0
-            lr : 0
-            lambd: 0
+            T: 210
+            lr : 0.0014
+            lambd: 5.26
         beta_2:
-            T: 0
-            lr : 0
-            lambd: 0
+            T: 240
+            lr : 0.0055
+            lambd: 2.29
     testing_walktrap:
       tau_0.5:
         beta_0.5:
-            T: 0
-            lr : 0
-            lambd: 0
+            T: 280
+            lr : 0.0064
+            lambd: 29.26
         beta_1:
-            T: 0
-            lr : 0
-            lambd: 0
+            T: 300
+            lr : 0.0074
+            lambd: 26.84
         beta_2:
-            T: 0
-            lr : 0
-            lambd: 0
+            T: 220
+            lr : 0.0066
+            lambd: 36.8
+
+fb:
+  training_greedy:
+    testing_greedy:
+      tau_0.5:
+        beta_0.5:
+            T: 290
+            lr : 0.0011
+            lambd: 4.97
+        beta_1:
+            T: 250
+            lr : 0.008
+            lambd: 26
+        beta_2:
+            T: 290
+            lr : 0.0098
+            lambd: 0.23
+    testing_louvain:
+      tau_0.5:
+        beta_0.5:
+            T: 150
+            lr : 0.0058
+            lambd: 72.89
+        beta_1:
+            T: 120
+            lr : 0.0093
+            lambd: 0.93
+        beta_2:
+            T: 170
+            lr : 0.0011
+            lambd: 21.3
+    testing_walktrap:
+      tau_0.5:
+        beta_0.5:
+            T: 70
+            lr : 0.0053
+            lambd: 1.96
+        beta_1:
+            T: 190
+            lr : 0.0026
+            lambd: 4.2
+        beta_2:
+            T: 140
+            lr : 0.001
+            lambd: 6.7
 
