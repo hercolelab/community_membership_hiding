@@ -41,17 +41,17 @@ if __name__ == "__main__":
 
     datasets = [
         #FilePaths.KAR.value,
-         FilePaths.WORDS.value,
+        #FilePaths.WORDS.value,
         #FilePaths.VOTE.value,
         # FilePaths.NETS.value,
-        #FilePaths.POW.value,
+        FilePaths.POW.value,
         #FilePaths.FB_75.value,
         # FilePaths.ASTR.value,
     ]
     detection_algs = [
         DetectionAlgorithmsNames.GRE.value,
-        #DetectionAlgorithmsNames.LOUV.value,
-        #DetectionAlgorithmsNames.WALK.value,
+        DetectionAlgorithmsNames.LOUV.value,
+        DetectionAlgorithmsNames.WALK.value,
     ]
 
     with open("src/community_algs/dcmh/conf/base.yaml", "r") as file:

@@ -30,21 +30,24 @@ class DcmhHiding():
         self.detection_alg = self.env.detection
         self.old_communities = old_communities
         self.budget = steps
+        self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
         # Parameters
         self.T, self.lr, self.u, self.lambd, self.beta, self.tau, self.attention, self.reinit = self.get_evader_parameters(cfg)
         seed = editable_HyperParams.seed
 
         # Variables
-        self.neighbors = torch.LongTensor(self.graph.neighbors(self.u))
+        self.neighbors = torch.LongTensor(self.graph.neighbors(self.u)).to(self.device)
         self.a_u = torch.zeros(self.graph.vcount(), dtype=torch.int)
         self.a_u[self.neighbors] = 1
+        self.a_u = self.a_u.to(self.device)
         self.fixed_nodes = torch.LongTensor([v for v in self.neighbors if self.graph.degree(v) == 1]+[v for v in self.neighbors if self.graph.degree(self.u) == 1])
-        
+        self.fixed_nodes = self.fixed_nodes.to(self.device)
         ## Candidate list for the loss
         self.v_opt = self.candidate_list(self.graph,self.old_communities,self.u,self.attention)
         self.v_opt[self.u] = torch.Tensor([0])
         self.v_opt[self.fixed_nodes] = torch.Tensor([1])
+        self.v_opt = self.v_opt.to(self.device)
 
     ############################################################################
     #                                EVADING                                   #
@@ -73,15 +76,18 @@ class DcmhHiding():
 
         #Perturbation vector
         """We generate random vector s.t. threshold(tanh(x_hat)) = 0 """
-        x_hat, optimizer = self.initialize_perturbation_vector(n_nodes, self.lr, self.u, self.fixed_nodes)
+        x_hat, optimizer = self.initialize_perturbation_vector(n_nodes, self.lr, self.u, self.fixed_nodes, self.device)
 
         #EVASION LOOP
         while goal==0 and t < self.T:
             
             #Perturbation update
             p_hat = torch.tanh(x_hat)
+            p_hat = p_hat.to(self.device)
             p = self.threshold_tanh(p_hat.detach().clone(), 0.5, -0.5)
+            p = p.to(self.device)
             a_new = self.clamp(torch.Tensor(a_u + p))
+            a_new = a_new.to(self.device)
             history.append(a_new)
 
             edges_changed, n_changes = self.get_changes(history[-2], history[-1], self.u)
@@ -99,6 +105,7 @@ class DcmhHiding():
             l_decept = self.loss_decept(a_u, p_hat, self.v_opt, self.frobenius_dist)
             l_dist = self.loss_dist(p_hat)
             loss = l_decept + self.lambd * l_dist
+            loss = loss.to(self.device)
             optimizer.zero_grad()
             loss.backward()
             optimizer.step()
@@ -106,7 +113,7 @@ class DcmhHiding():
             
             if budget_used > self.budget:
                 if self.reinit: 
-                    x_hat, optimizer = self.initialize_perturbation_vector(n_nodes, self.lr, self.u, self.fixed_nodes) 
+                    x_hat, optimizer = self.initialize_perturbation_vector(n_nodes, self.lr, self.u, self.fixed_nodes, self.device) 
                     # Restore parameters for evasion loop
                     goal = 0 
                     budget_used=0
@@ -115,10 +122,10 @@ class DcmhHiding():
                 else: 
                     g_prime = G
                     break
-        
+
             if budget_used == self.budget and goal==0:
                 if self.reinit: 
-                    x_hat, optimizer = self.initialize_perturbation_vector(n_nodes, self.lr, self.u, self.fixed_nodes)
+                    x_hat, optimizer = self.initialize_perturbation_vector(n_nodes, self.lr, self.u, self.fixed_nodes, self.device)
                     # Restore parameters for evasion loop
                     budget_used=0
                     history.append(a_u)
@@ -329,6 +336,7 @@ class DcmhHiding():
             lr: float, 
             u: int, 
             fixed_nodes: torch.Tensor, 
+            device: torch.device
         ) -> Tuple[torch.Tensor, torch.optim.Optimizer]:
         """
         Initialize the perturbation vector s.t. threshold(tanh(x_hat)) = 0.
@@ -352,7 +360,7 @@ class DcmhHiding():
             The optimizer.
         """
         torch.seed()
-        x_hat = (2*torch.rand(n_nodes) - 1)*0.5
+        x_hat = (2*torch.rand(n_nodes, device=device) - 1)*0.5
         x_hat[u] = torch.Tensor([0])
         x_hat[fixed_nodes] = torch.Tensor([0])
 
@@ -510,13 +518,16 @@ class DcmhHiding():
     ############################################################################
 
     def clamp(self, z):
-        z.apply_(lambda x: max(0, min(x, 1)))
+        z = z.to(self.device)
+        z = torch.clamp(z,0,1)
         return z
     
     def threshold_tanh(self, z, tp, tn):
+        z = z.to(self.device)
         z[z >= tp] = 1
         z[z <= tn] = -1
-        z.apply_(lambda x: 0 if (x < tp) and (x > tn) else x)
+        mask = (z < tp) & (z > tn)
+        z[mask] = 0
         return z
     
     def frobenius_dist(self, c1, c2):
