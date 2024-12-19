@@ -1,5 +1,5 @@
 from re import S
-from src.utils.utils import HyperParams, Utils, FilePaths
+from src.utils.utils import editable_HyperParams,HyperParams, Utils, FilePaths
 from src.environment.graph_env import GraphEnvironment
 from src.agent.agent import Agent
 
@@ -19,6 +19,7 @@ import cdlib
 import time
 import copy
 import yaml
+import random
 
 
 class NodeHiding:
@@ -133,10 +134,22 @@ class NodeHiding:
             self.agent.env.change_target_community()
             # Copy the community target to avoid modifying the original one
             self.community_target = copy.deepcopy(self.agent.env.community_target)
+            max_deceptions = 100
+            random.seed(editable_HyperParams.seed)
+            if len(self.community_target) < max_deceptions:
+                self.community_target_nodes = self.community_target.copy()
+            else:
+                random.shuffle(self.community_target)
+                self.community_target_nodes = self.community_target[:max_deceptions]
+            
         else:
-            self.agent.env.change_target_node()
-        self.node_target = self.agent.env.node_target
-        self.dcmh_config['u'] = self.node_target
+            #self.agent.env.change_target_node()
+            self.agent.env.node_target = self.community_target_nodes.pop()
+        
+        if self.agent.env.node_target is None:
+            self.agent.env.node_target = 0
+        self.node_target = self.agent.env.node_target 
+        self.dcmh_config['u'] = self.node_target 
 
         # DCMH method
         self.dcmh_hiding = DcmhHiding(
@@ -198,9 +211,9 @@ class NodeHiding:
             # print("* Community Size:", self.agent.env.preferred_community_size)
             # Change the target community
             self.reset_experiment()
-
             sizes.set_description(f"* * * Community Size {len(self.community_target)}")
-            steps = trange(self.eval_steps, desc="Testing Episode", leave=False)
+            steps = trange(len(self.community_target_nodes), desc="Testing Episode", leave=False)
+            
             for step in steps:
                 # Change target node within the community
                 self.reset_experiment(target_community=False)

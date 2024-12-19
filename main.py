@@ -41,7 +41,7 @@ if __name__ == "__main__":
 
     datasets = [
         #FilePaths.KAR.value,
-        #FilePaths.WORDS.value,
+         FilePaths.WORDS.value,
         #FilePaths.VOTE.value,
         # FilePaths.NETS.value,
         #FilePaths.POW.value,
@@ -49,12 +49,11 @@ if __name__ == "__main__":
         # FilePaths.ASTR.value,
     ]
     detection_algs = [
-        #DetectionAlgorithmsNames.GRE.value,
+        DetectionAlgorithmsNames.GRE.value,
         #DetectionAlgorithmsNames.LOUV.value,
         #DetectionAlgorithmsNames.WALK.value,
     ]
 
-    editable_HyperParams.seed = int(time.time())
     with open("src/community_algs/dcmh/conf/base.yaml", "r") as file:
         cfg = yaml.safe_load(file)
 
@@ -98,7 +97,7 @@ if __name__ == "__main__":
                 # Beta for the node hiding task is a multiplier of mean degree of the
                 # the graph
                 node_betas = [0.5, 1, 2]
-                #node_betas = [2]
+                #node_betas = [1]
 
                 # Initialize the test class
                 node_hiding = NodeHiding(agent=agent, model_path=model_path, dcmh_config=cfg)
@@ -140,7 +139,7 @@ if __name__ == "__main__":
             taus=[0.5],
             betas=[0.5,1,2],
         )
-    save_time = True
+    save_time = False
     if save_time:
         Utils.plot_time_all_datasets(
             datasets= [FilePaths.KAR.value,FilePaths.WORDS.value, FilePaths.VOTE.value, FilePaths.POW.value],
