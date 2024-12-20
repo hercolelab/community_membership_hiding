@@ -14,45 +14,45 @@ kar:
     testing_greedy:
       tau_0.5:
         beta_0.5:
-            T: 100
-            lr : 0.082
-            lambd: 0.32
+            T: 80
+            lr : 0.047
+            lambd: 0.099
         beta_1:
             T: 100
-            lr : 0.11
-            lambd: 0.178
+            lr : 0.18
+            lambd: 1.32
         beta_2:
-            T: 90
-            lr : 0.061
-            lambd: 1.18
+            T: 80
+            lr : 0.134
+            lambd: 0.82
     testing_louvain:
       tau_0.5:
         beta_0.5:
-            T: 30
-            lr : 0.165
-            lambd: 0.64
+            T: 80
+            lr : 0.188
+            lambd: 2.46
         beta_1:
-            T: 70
-            lr : 0.17
-            lambd: 0.82
+            T: 60
+            lr : 0.26
+            lambd: 1.823
         beta_2:
             T: 70
-            lr : 0.14
-            lambd: 0.03
+            lr : 0.33
+            lambd: 3.34
     testing_walktrap:
       tau_0.5:
         beta_0.5:
-            T: 90
-            lr : 0.075
-            lambd: 1.97
+            T: 50
+            lr : 0.085
+            lambd: 1.02
         beta_1:
-            T: 100
-            lr : 0.186
-            lambd: 0.94
+            T: 80
+            lr : 0.188
+            lambd: 0.66
         beta_2:
             T: 100
-            lr : 0.248
-            lambd: 1.95
+            lr : 0.422
+            lambd: 4.085
 
 words:
   training_greedy:

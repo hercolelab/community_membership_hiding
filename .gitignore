@@ -9,6 +9,9 @@ __pycache__/
 #Hydra
 outputs
 
+#wandb
+wandb
+
 # MacOS 
 .DS_Store
 
