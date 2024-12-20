@@ -1,6 +1,6 @@
 from enum import Enum
 from typing import List, Tuple
-from statistics import mean
+from statistics import mean, stdev
 
 # from src.environment.graph_env import GraphEnvironment
 
@@ -28,9 +28,9 @@ class FilePaths(Enum):
     # TRAINED_MODEL = "src/models/nets/greedy/eps-10/lr-0.0007/gamma-0.95/lambda-0.1/alpha-0.7/model.pth"
 
     # USED DATASETS
-    # KAR = DATASETS_DIR + "/kar.mtx"
+    KAR = DATASETS_DIR + "/kar.mtx"
     WORDS = DATASETS_DIR + "/words.mtx"
-    # VOTE = DATASETS_DIR + "/vote.mtx"
+    VOTE = DATASETS_DIR + "/vote.mtx"
 
     # DIAG DATASETS
     AMZ = DATASETS_DIR + "/amz.gml"
@@ -38,8 +38,8 @@ class FilePaths(Enum):
     FB_75 = DATASETS_DIR + "/fb-75.gml"
     POW = DATASETS_DIR + "/pow.gml"
     NETS = DATASETS_DIR + "/nets.gml"
-    VOTE = DATASETS_DIR + "/vote.gml"
-    KAR = DATASETS_DIR + "/kar.gml"
+    #VOTE = DATASETS_DIR + "/vote.gml"
+    #KAR = DATASETS_DIR + "/kar.gml"
 
 
 class DetectionAlgorithmsNames(Enum):
@@ -73,6 +73,8 @@ class SimilarityFunctionsNames(Enum):
     JAC_1 = "jaccard_1"
     JAC_2 = "jaccard_2"
 
+class editable_HyperParams:
+    seed = 22
 
 class HyperParams(Enum):
     """Hyperparameters for the Environment"""
@@ -462,7 +464,7 @@ class Utils:
     ############################################################################
     @staticmethod
     def save_test(
-        log: dict, files_path: str, log_name: str, algs: List[str], metrics: List[str]
+        log: dict, files_path: str, log_name: str, algs: List[str], metrics: List[str], budget: int, dcmh_outs: dict
     ):
         """Save and Plot the testing results
 
@@ -478,21 +480,52 @@ class Utils:
             List of algorithms names to evaluate
         metrics : List[str]
             List of metrics to evaluate
+        budget : int
+            Number of allowed changes
         """
         file_name = f"{files_path}/{log_name}.json"
         # Save json file
         with open(file_name, "w", encoding="utf-8") as f:
             json.dump(log, f, indent=4)
 
-        for metric in metrics:
-            # Create a DataFrame with the mean values of each algorithm for the metric
-            df = pd.DataFrame(
-                {
-                    "Algorithm": algs,
-                    metric.capitalize(): [mean(log[alg][metric]) for alg in algs],
-                }
-            )
+        dcmh_name = f"{files_path}/dcmh_outputs.json"
+        with open(dcmh_name, "w", encoding="utf-8") as f:
+            json.dump(dcmh_outs, f, indent=4)
 
+        metrics.append("f1 score")
+
+        for metric in metrics:
+            
+            # Create a DataFrame with the mean values of each algorithm for the metric
+            if metric == "steps":
+                df = pd.DataFrame(
+                    {
+                        "Algorithm": algs,
+                        metric.capitalize(): [
+                            mean([log[alg][metric][i] for i in range(len(log[alg]["goal"])) if log[alg]["goal"][i] == 1])/budget 
+                            if any(log[alg]["goal"][i] == 1 for i in range(len(log[alg]["goal"]))) else 0 
+                            for alg in algs
+                        ],
+                    }
+                )
+            elif metric == "f1 score":
+                df = pd.DataFrame(
+                    {
+                        "Algorithm": algs,
+                        metric.capitalize(): [ mean([
+                                2 * (log[alg]["goal"][i] * log[alg]["nmi"][i]) / (log[alg]["goal"][i] + log[alg]["nmi"][i])
+                                for i in range(len(log[alg]["goal"]))
+                            ]) for alg in algs]
+                    }
+                )
+            else:
+                df = pd.DataFrame(
+                    {
+                        "Algorithm": algs,
+                        metric.capitalize(): [mean(log[alg][metric]) for alg in algs],
+                    }
+                )
+            
             # Convert the goal column to percentage
             if metric == "goal":
                 df[metric.capitalize()] = df[metric.capitalize()] * 100
@@ -501,7 +534,9 @@ class Utils:
                 data=df,
                 x="Algorithm",
                 y=metric.capitalize(),
-                palette=sns.color_palette("Set1"),
+                palette=sns.color_palette("Set2"),
+                edgecolor="black",  
+                linewidth=0.5
             )
             plt.title(
                 f"Evaluation on {log['env']['dataset']} graph with {log['env']['detection_alg']} algorithm"
@@ -511,7 +546,235 @@ class Utils:
                 plt.ylabel(f"{metric.capitalize()} reached %")
             elif metric == "time":
                 plt.ylabel(f"{metric.capitalize()} (s)")
+            elif metric == "steps":
+                plt.ylabel("Budget used % if goal reached")
             else:
                 plt.ylabel(metric.capitalize())
             plt.savefig(f"{files_path}/{log_name}_{metric}.png")
             plt.clf()
+    
+    @staticmethod
+    def plot_f1_all_datasets(
+            datasets: List[str], 
+            detection_algs: List[str],
+            taus: List[float],
+            betas: List[float]
+            ):
+        """
+        Plot the f1 scores of the evaluation on all the datasets and detection algorithms
+
+        Parameters
+        ----------
+        datasets : List[str]
+            List of datasets
+        detection_algs : List[str]
+            List of detection algorithms
+        taus : List[float]
+            List of tau values
+        betas : List[float]
+            List of beta values
+        """
+
+        datasets_names = {
+            FilePaths.KAR.value: "kar",
+            FilePaths.WORDS.value: "words",
+            FilePaths.VOTE.value: "vote",
+            FilePaths.NETS.value: "nets",
+            FilePaths.POW.value: "pow",
+            FilePaths.FB_75.value: "fb",
+            FilePaths.ASTR.value: "astr",
+        }
+
+        save_path = "test_review/all_datasets/f1_score/"
+        Utils.check_dir(save_path)
+        log_name = "evaluation_node_hiding"
+
+        agent_renamed = "DRL-Agent"
+        centrality_renamed = "Betweenness"
+        dcmh_renamed = "DCMH (ours)"
+
+        evading_algs=["DCMH","Agent","Random","Degree","Centrality","Roam","Greedy"]
+        metric = "F1 score"
+
+        datasets = [datasets_names[dataset] for dataset in datasets]
+
+        f1_dict = {}
+        for dataset in datasets:
+            f1_dict[dataset] = {}
+            for detection_alg in detection_algs:
+                f1_dict[dataset][detection_alg] = {}
+                for tau in taus:
+                    f1_dict[dataset][detection_alg][f"tau_{tau}"] = {}
+                    for beta in betas:
+                        f1_dict[dataset][detection_alg][f"tau_{tau}"][f"beta_{beta}"] = {}
+                        json_path = f"test_review/{dataset}/{detection_alg}/node_hiding/tau_{tau}/beta_{beta}/{log_name}.json"
+                        with open(json_path, "r") as f:
+                            log = json.load(f)
+                        for alg in evading_algs:
+                            f1_dict[dataset][detection_alg][f"tau_{tau}"][f"beta_{beta}"][alg] = [
+                                (2 * x * y) / (x + y)
+                                for x, y in zip(log[alg]["goal"], log[alg]["nmi"])
+                            ]
+
+
+        for detection_alg in detection_algs:
+            for tau in taus:
+                for beta in betas:
+                    plot_data = []
+                    for dataset in datasets:
+                        df = pd.DataFrame(f1_dict[dataset][detection_alg][f"tau_{tau}"][f"beta_{beta}"])
+                        plot_data.append(df)
+                    df = pd.concat(plot_data,axis=1)
+                    # in algs list replace "Agent" with "DRL-Agent"
+                    evading_algs = [agent_renamed if alg == "Agent" else alg for alg in evading_algs]
+                    # in algs list replace "Centrality" with "Betweenness"
+                    evading_algs = [centrality_renamed if alg == "Centrality" else alg for alg in evading_algs]
+                    # in algs list replace "DCMH" with "DCMH (ours)"
+                    evading_algs = [dcmh_renamed if alg == "DCMH" else alg for alg in evading_algs]
+                    df.columns = pd.MultiIndex.from_product([datasets, evading_algs])
+                    # Melt the dataframe
+                    df = df.melt(var_name=["Dataset", "Algorithm"], value_name=metric)
+
+
+                    sns.set_theme(style="darkgrid")
+                    palette = sns.set_palette("Set2")
+                    g = sns.catplot(
+                        data=df,
+                        kind="bar",
+                        x="Dataset",
+                        y=metric,
+                        hue="Algorithm",
+                        aspect=2,
+                        palette=palette,
+                        errorbar="ci",
+                        # errorbar=df_confidence_binary_test,
+                    )
+                    g.set_axis_labels("Datasets", f"Mean {metric.capitalize()}", fontsize=15)
+                    sns.move_legend(g, "upper right", bbox_to_anchor=(1, 0.7), frameon=False)
+                    g.set_xticklabels(rotation=45, ha="center", fontsize=18)
+                    save_fig_path = f"{save_path}/{detection_alg}/tau_{tau}/beta_{beta}"
+                    Utils.check_dir(save_fig_path)
+                    g.savefig(
+                        f"{save_fig_path}/f1_score_grouped.png",
+                        bbox_inches="tight",
+                        dpi=300,
+                    )
+
+                    
+    @staticmethod
+    def plot_time_all_datasets(
+            datasets: List[str], 
+            detection_algs: List[str],
+            taus: List[float],
+            betas: List[float]
+            ):
+        """
+        Plot the time of the evaluation on all the datasets and detection algorithms
+
+        Parameters
+        ----------
+        datasets : List[str]
+            List of datasets
+        detection_algs : List[str]
+            List of detection algorithms
+        taus : List[float]
+            List of tau values
+        betas : List[float]
+            List of beta values
+        """
+
+        datasets_names = {
+            FilePaths.KAR.value: "kar",
+            FilePaths.WORDS.value: "words",
+            FilePaths.VOTE.value: "vote",
+            FilePaths.POW.value: "pow",
+            FilePaths.FB_75.value: "fb",
+        }
+
+        dataset_sizes = {
+            "kar": 34,
+            "words": 112,
+            "vote": 889,
+            "pow": 4941,
+            "fb": 6386,
+        }
+
+        save_path = "test_review/all_datasets/time/"
+        Utils.check_dir(save_path)
+        log_name = "evaluation_node_hiding"
+
+        agent_renamed = "DRL-Agent"
+        centrality_renamed = "Betweenness"
+        dcmh_renamed = "DCMH (ours)"
+
+        evading_algs=["Agent","DCMH"]
+        metric = "Time"
+
+        datasets = [datasets_names[dataset] for dataset in datasets]
+
+        time_dict = {}
+        for dataset in datasets:
+            time_dict[dataset] = {}
+            for detection_alg in detection_algs:
+                time_dict[dataset][detection_alg] = {}
+                for tau in taus:
+                    time_dict[dataset][detection_alg][f"tau_{tau}"] = {}
+                    for beta in betas:
+                        time_dict[dataset][detection_alg][f"tau_{tau}"][f"beta_{beta}"] = {}
+                        json_path = f"test_review/{dataset}/{detection_alg}/node_hiding/tau_{tau}/beta_{beta}/{log_name}.json"
+                        with open(json_path, "r") as f:
+                            log = json.load(f)
+                        for alg in evading_algs:
+                            time_dict[dataset][detection_alg][f"tau_{tau}"][f"beta_{beta}"][alg] = {
+                                "mean": mean(log[alg]["time"]),
+                                "std": stdev(log[alg]["time"]),
+                            }
+
+        x_values = [dataset_sizes[dataset] for dataset in datasets]
+        palette = sns.color_palette("Set2")
+        
+        dcmh_color = palette[0]
+        agent_color = palette[1]
+
+        for detection_alg in detection_algs:
+            for tau in taus:
+                for beta in betas:
+                    plot_data=[]
+                    for dataset in datasets:
+                        dict = time_dict[dataset][detection_alg][f"tau_{tau}"][f"beta_{beta}"]
+                        plot_data.append(dict)
+                    time_agent_mean = [dict["Agent"]["mean"] for dict in plot_data]
+                    time_agent_std = [dict["Agent"]["std"] for dict in plot_data]
+                    time_dcmh_mean = [dict["DCMH"]["mean"] for dict in plot_data]
+                    time_dcmh_std = [dict["DCMH"]["std"] for dict in plot_data]
+
+                    sns.set_theme(style="darkgrid")
+                    plt.figure(figsize=(14, 10))
+                    plt.errorbar(x_values, time_dcmh_mean, yerr=time_dcmh_std, fmt='o', label='DCMH (ours)', markersize=10, capsize=7, color=dcmh_color)
+                    plt.plot(x_values, time_dcmh_mean, 'r--',color=dcmh_color, linewidth=0.5, alpha=0.5)
+                    plt.errorbar(x_values, time_agent_mean, yerr=time_agent_std, fmt='o', label='DRL-Agent', markersize=10, capsize=7, color=agent_color)
+                    plt.plot(x_values, time_agent_mean, 'r--', color=agent_color,linewidth=0.5, alpha=0.5)
+                    plt.xscale('log')
+                    plt.xlabel('Network size',fontsize=20)
+                    plt.ylabel('Evading Time (s)',fontsize=20)
+                    #custom_labels = ["kar (34)", "words (0.11k)", "vote (0.89k)", "pow (4.9k)", "fb (6.3k)"]
+                    custom_labels = ["kar (0.03k)", "words (0.11k)", "vote (0.89k)", "pow (4.9k)"]
+                    plt.xticks(ticks=x_values, labels=custom_labels,rotation=45,ha="center", fontsize=15)
+                    plt.legend(fontsize=20)
+                    plt.grid(True)
+                    save_fig_path = f'{save_path}/{detection_alg}/tau_{tau}/beta_{beta}'
+                    Utils.check_dir(save_fig_path)
+                    plt.savefig(f'{save_fig_path}/evading_time_grouped.png', format='png', dpi=300, bbox_inches="tight") 
+
+
+
+
+
+
+
+
+
+
+
+
+

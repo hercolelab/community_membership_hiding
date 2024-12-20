@@ -200,10 +200,12 @@ class GreedyHiding:
                 graph = graph_2
                 communities = communities_2
                 target_community = self.get_new_community(communities_2)
+                loss_1 = float("inf")
             elif candidate_2 is None:
                 graph = graph_1
                 communities = communities_1
                 target_community = self.get_new_community(communities_1)
+                loss_2 = float("inf")
             elif candidate_1 is None and candidate_2 is None:
                 break
 
