@@ -1,4 +1,4 @@
-dataset: karate
+dataset: kar
 train_alg: greedy
 test_alg: greedy
 
@@ -7,7 +7,7 @@ reinitialization: True
 dist_f: frobenius_dist
 u: 0
 tau: 0.5
-budget_factor: 1
+beta: 1
 
 kar:
   training_greedy:

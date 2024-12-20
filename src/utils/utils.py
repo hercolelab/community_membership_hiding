@@ -492,6 +492,7 @@ class Utils:
         with open(dcmh_name, "w", encoding="utf-8") as f:
             json.dump(dcmh_outs, f, indent=4)
 
+        """
         metrics.append("f1 score")
 
         for metric in metrics:
@@ -551,7 +552,7 @@ class Utils:
             else:
                 plt.ylabel(metric.capitalize())
             plt.savefig(f"{files_path}/{log_name}_{metric}.png")
-            plt.clf()
+            plt.clf() """
     
     @staticmethod
     def plot_f1_all_datasets(

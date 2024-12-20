@@ -52,14 +52,15 @@ def main(cfg: DictConfig):
         cfg = yaml.safe_load(file)
 
     for dataset in datasets:
-        # ° --- Environment Setup --- ° #
-        env = GraphEnvironment(graph_path=dataset)
-        cfg["dataset"] = dataset_names[dataset]
-
-        # ° ------  Agent Setup ----- ° #
-        agent = Agent(env=env)
 
         for alg in detection_algs:
+
+            # ° --- Environment Setup --- ° #
+            env = GraphEnvironment(graph_path=dataset, community_detection_algorithm=alg)
+            cfg["dataset"] = dataset_names[dataset]
+            # ° ------  Agent Setup ----- ° #
+            agent = Agent(env=env)
+
             log.info("Dataset: {} - Detection Algorithm: {}".format(env.env_name, alg))
             log.info(f"Output directory: {HydraConfig.get().runtime.output_dir}")
             agent.env.set_communities(alg)

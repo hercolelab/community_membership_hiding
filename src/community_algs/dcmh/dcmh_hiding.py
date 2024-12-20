@@ -34,7 +34,6 @@ class DcmhHiding():
 
         # Parameters
         self.T, self.lr, self.u, self.lambd, self.beta, self.tau, self.attention, self.reinit = self.get_evader_parameters(cfg)
-        seed = editable_HyperParams.seed
 
         # Variables
         self.neighbors = torch.LongTensor(self.graph.neighbors(self.u)).to(self.device)
@@ -438,7 +437,7 @@ class DcmhHiding():
         lr = evader_cfg["lr"]
         lambd = evader_cfg["lambd"]
         u = cfg["u"]
-        beta = cfg["budget_factor"]
+        beta = cfg["beta"]
         tau = cfg["tau"]
         attention = cfg["attention"]
         reinit = cfg["reinitialization"]
@@ -462,7 +461,7 @@ class DcmhHiding():
         train_alg = cfg["train_alg"]
         test_alg = cfg["test_alg"]
         tau = cfg["tau"]
-        beta = cfg["budget_factor"]
+        beta = cfg["beta"]
         try:
             evader_cfg = cfg[dataset][f"training_{train_alg}"][f"testing_{test_alg}"][f"tau_{tau}"][f"beta_{beta}"]
         except KeyError:

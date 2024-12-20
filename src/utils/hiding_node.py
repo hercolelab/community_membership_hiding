@@ -98,7 +98,7 @@ class NodeHiding:
         """
         self.beta = beta
         self.tau = tau
-        self.dcmh_config['budget_factor'] = beta
+        self.dcmh_config['beta'] = beta
         self.dcmh_config['tau'] = tau
 
         self.agent.env.beta = beta
@@ -239,10 +239,10 @@ class NodeHiding:
                 #print("* Edge Budget:", self.edge_budget)
 
                 # ° ------ Agent Rewiring ------ ° #
-                steps.set_description(
+                """steps.set_description(
                     f"* * * Testing Episode {step+1} | Agent Rewiring"
                 )
-                self.run_alg(self.run_agent)
+                self.run_alg(self.run_agent)"""
 
                 # ° ------ DCMH Rewiring ------ ° #
                 steps.set_description(
@@ -250,7 +250,7 @@ class NodeHiding:
                 )
                 self.run_alg(self.run_dcmh)
 
-                # ° ------   Baselines   ------ ° #
+                """# ° ------   Baselines   ------ ° #
                 # Random Rewiring
                 steps.set_description(
                     f"* * * Testing Episode {step+1} | Random Rewiring"
@@ -276,7 +276,7 @@ class NodeHiding:
                 steps.set_description(
                     f"* * * Testing Episode {step+1} | Greedy Rewiring"
                 )
-                self.run_alg(self.run_greedy)
+                self.run_alg(self.run_greedy)"""
 
         Utils.check_dir(self.path_to_save)
         Utils.save_test(
