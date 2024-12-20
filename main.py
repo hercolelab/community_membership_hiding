@@ -9,21 +9,14 @@ import argparse
 import math
 import time
 import yaml
+import hydra
+import logging
+from omegaconf import DictConfig
+from hydra.core.hydra_config import HydraConfig
 
-
-def get_args():
-    """
-    Function for handling command line arguments
-
-    Returns
-    -------
-    args : argparse.Namespace
-    """
-    parser = argparse.ArgumentParser(description="PyTorch A2C")
-    # Mode: train or test
-    parser.add_argument("--mode", type=str, default="both", help="train | test | both")
-    # Argument parsing
-    return parser.parse_args()
+# Variables to choose the mode of the script
+TRAIN = False
+TEST = True
 
 dataset_names = {
     FilePaths.KAR.value: "kar",
@@ -36,22 +29,23 @@ dataset_names = {
 }
 
 
-if __name__ == "__main__":
-    args = get_args()
+log = logging.getLogger(__name__)
+@hydra.main(config_path="src/community_algs/dcmh/conf", config_name="base", version_base=None)
+def main(cfg: DictConfig):
 
     datasets = [
-        #FilePaths.KAR.value,
+        FilePaths.KAR.value,
         #FilePaths.WORDS.value,
         #FilePaths.VOTE.value,
         # FilePaths.NETS.value,
-        FilePaths.POW.value,
+        #FilePaths.POW.value,
         #FilePaths.FB_75.value,
         # FilePaths.ASTR.value,
     ]
     detection_algs = [
         DetectionAlgorithmsNames.GRE.value,
-        DetectionAlgorithmsNames.LOUV.value,
-        DetectionAlgorithmsNames.WALK.value,
+        #DetectionAlgorithmsNames.LOUV.value,
+        #DetectionAlgorithmsNames.WALK.value,
     ]
 
     with open("src/community_algs/dcmh/conf/base.yaml", "r") as file:
@@ -66,17 +60,18 @@ if __name__ == "__main__":
         agent = Agent(env=env)
 
         for alg in detection_algs:
-            print("Dataset: {} - Detection Algorithm: {}".format(env.env_name, alg))
+            log.info("Dataset: {} - Detection Algorithm: {}".format(env.env_name, alg))
+            log.info(f"Output directory: {HydraConfig.get().runtime.output_dir}")
             agent.env.set_communities(alg)
             cfg["test_alg"] = alg
 
             # ° ------    TRAIN    ------ ° #
-            if args.mode == "train" or args.mode == "both":
+            if TRAIN==True:
                 # Training
                 agent.grid_search()
 
             # ° ------    TEST    ------ ° #
-            elif args.mode == "test" or args.mode == "both":
+            elif TEST==True:
                 # To change the detection algorithm, or the dataset, on which the model
                 # will be tested, please refer to the class HyperParams in the file
                 # src/utils/utils.py, changing the values of the variables:
@@ -91,9 +86,6 @@ if __name__ == "__main__":
                 #taus = [0.3, 0.5, 0.8]
                 taus = [0.5]
                 # BETAs defines the number of actions to perform
-                # Beta for the community hiding task defines the percentage of rewiring
-                # action, add or remove edges
-                community_betas = [1, 3, 5, 10]
                 # Beta for the node hiding task is a multiplier of mean degree of the
                 # the graph
                 node_betas = [0.5, 1, 2]
@@ -101,34 +93,18 @@ if __name__ == "__main__":
 
                 # Initialize the test class
                 node_hiding = NodeHiding(agent=agent, model_path=model_path, dcmh_config=cfg)
-                community_hiding = CommunityHiding(agent=agent, model_path=model_path)
 
-                print("* NOTE:")
-                print(
+                log.info("* NOTE:")
+                log.info(
                     "*    - Beta for Node Hiding is a multiplier of the mean degree of the graph"
                 )
-                print(
-                    "*    - Beta for Community Hiding is the percentage of rewiring action, add or remove edges"
-                )
                 for tau in taus:
-                    print("* Node Hiding with tau = {}".format(tau))
+                    log.info("* Node Hiding with tau = {}".format(tau))
 
                     for beta in node_betas:
-                        print("* * Beta Node = {}".format(beta))
-                        node_hiding.set_parameters(beta=beta, tau=tau)
+                        log.info("* * Beta Node = {}".format(beta))
+                        node_hiding.set_parameters(beta=beta, tau=tau, output_dir=HydraConfig.get().runtime.output_dir)
                         node_hiding.run_experiment()
-
-                # print("* Community Hiding")  #  with tau = {}".format(tau))
-                # for beta in community_betas:
-                #     print("* * Beta Community = {}".format(beta))
-                #     community_hiding.set_parameters(beta=beta, tau=0.3)
-                #     community_hiding.run_experiment()
-                # print("* " * 50)
-
-            else:
-                raise ValueError(
-                    "Invalid mode. Please choose between 'train' and 'test'"
-                )
 
 
     save_f1 = False
@@ -147,5 +123,8 @@ if __name__ == "__main__":
             taus=[0.5],
             betas=[0.5,1,2],
         )
+
+if __name__ == "__main__":
+    main()
 
             

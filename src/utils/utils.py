@@ -74,7 +74,7 @@ class SimilarityFunctionsNames(Enum):
     JAC_2 = "jaccard_2"
 
 class editable_HyperParams:
-    seed = 33
+    seed = 22
 
 class HyperParams(Enum):
     """Hyperparameters for the Environment"""
@@ -464,7 +464,7 @@ class Utils:
     ############################################################################
     @staticmethod
     def save_test(
-        log: dict, files_path: str, log_name: str, algs: List[str], metrics: List[str], budget: int
+        log: dict, files_path: str, log_name: str, algs: List[str], metrics: List[str], budget: int, dcmh_outs: dict
     ):
         """Save and Plot the testing results
 
@@ -487,6 +487,10 @@ class Utils:
         # Save json file
         with open(file_name, "w", encoding="utf-8") as f:
             json.dump(log, f, indent=4)
+
+        dcmh_name = f"{files_path}/dcmh_outputs.json"
+        with open(dcmh_name, "w", encoding="utf-8") as f:
+            json.dump(dcmh_outs, f, indent=4)
 
         metrics.append("f1 score")
 
@@ -581,7 +585,7 @@ class Utils:
             FilePaths.ASTR.value: "astr",
         }
 
-        save_path = "test/all_datasets/f1_score/"
+        save_path = "test_review/all_datasets/f1_score/"
         Utils.check_dir(save_path)
         log_name = "evaluation_node_hiding"
 
@@ -603,7 +607,7 @@ class Utils:
                     f1_dict[dataset][detection_alg][f"tau_{tau}"] = {}
                     for beta in betas:
                         f1_dict[dataset][detection_alg][f"tau_{tau}"][f"beta_{beta}"] = {}
-                        json_path = f"test/{dataset}/{detection_alg}/node_hiding/tau_{tau}/beta_{beta}/{log_name}.json"
+                        json_path = f"test_review/{dataset}/{detection_alg}/node_hiding/tau_{tau}/beta_{beta}/{log_name}.json"
                         with open(json_path, "r") as f:
                             log = json.load(f)
                         for alg in evading_algs:
@@ -695,7 +699,7 @@ class Utils:
             "fb": 6386,
         }
 
-        save_path = "test/all_datasets/time/"
+        save_path = "test_review/all_datasets/time/"
         Utils.check_dir(save_path)
         log_name = "evaluation_node_hiding"
 
@@ -717,7 +721,7 @@ class Utils:
                     time_dict[dataset][detection_alg][f"tau_{tau}"] = {}
                     for beta in betas:
                         time_dict[dataset][detection_alg][f"tau_{tau}"][f"beta_{beta}"] = {}
-                        json_path = f"test/{dataset}/{detection_alg}/node_hiding/tau_{tau}/beta_{beta}/{log_name}.json"
+                        json_path = f"test_review/{dataset}/{detection_alg}/node_hiding/tau_{tau}/beta_{beta}/{log_name}.json"
                         with open(json_path, "r") as f:
                             log = json.load(f)
                         for alg in evading_algs:

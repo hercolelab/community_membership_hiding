@@ -53,7 +53,19 @@ class DcmhHiding():
     #                                EVADING                                   #
     ############################################################################
 
-    def comm_evading(self) -> Tuple[ig.Graph, int]:
+    def comm_evading(self, dcmh_outs: dict) -> Tuple[ig.Graph, int]:
+
+        # Set hyperparameters in out dictionary
+        dcmh_outs["max_iterations"] = self.T
+        dcmh_outs["learning_rate"] = self.lr
+        dcmh_outs["lambda"] = self.lambd
+
+        temp_outs = {
+            "u": self.u,
+            "tau": self.tau,
+            "budget": self.budget,
+            "iterations": []
+        }
 
         # Training detection algorithm
         da_train = CommunityDetectionAlgorithm(self.cfg["train_alg"])
@@ -110,6 +122,15 @@ class DcmhHiding():
             loss.backward()
             optimizer.step()
             t += 1
+
+            # Save results of each iteration
+            temp_outs["iterations"].append({
+                "t": t,
+                "loss": loss.item(),
+                "Goal": goal,
+                "Budget used": budget_used,
+                "Changes": edges_changed,
+            })
             
             if budget_used > self.budget:
                 if self.reinit: 
@@ -133,6 +154,7 @@ class DcmhHiding():
                 else: 
                     break
         
+        dcmh_outs["deceptions"].append(temp_outs)
         return g_prime, budget_used
     
     ############################################################################

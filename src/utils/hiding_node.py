@@ -20,8 +20,10 @@ import time
 import copy
 import yaml
 import random
+import logging
+from hydra.core.hydra_config import HydraConfig
 
-
+log = logging.getLogger(__name__)
 class NodeHiding:
     """
     Class to evaluate the performance of the agent on the Node Hiding task, and
@@ -82,7 +84,7 @@ class NodeHiding:
         # TEST
         # self.evaluation_algs = ["Greedy"]
 
-    def set_parameters(self, beta: int, tau: float) -> None:
+    def set_parameters(self, beta: int, tau: float, output_dir: str) -> None:
         """Set the environment with the new parameters, for new experiments
 
         Parameters
@@ -91,6 +93,8 @@ class NodeHiding:
             Multiplicative factor for the number of edges to remove/add
         tau : float
             Constraint on the goal achievement
+        output_dir : str
+            Path to save the results
         """
         self.beta = beta
         self.tau = tau
@@ -110,8 +114,8 @@ class NodeHiding:
         self.set_log_dict()
 
         self.path_to_save = (
-            FilePaths.TEST_DIR.value
-            + f"{self.env_name}/{self.detection_alg}/"
+            output_dir
+            + f"/{self.env_name}/{self.detection_alg}/"
             + f"node_hiding/"
             + f"tau_{self.tau}/"
             + f"beta_{self.beta}/"
@@ -204,6 +208,16 @@ class NodeHiding:
         sizes = trange(
             len(preferred_size_list), desc="* * * Community Size", leave=True
         )
+
+        self.dcmh_outs = {
+            "dataset": self.env_name,
+            "train_detection_alg": self.dcmh_config['train_alg'],
+            "seed": editable_HyperParams.seed,
+            "max_iterations": int,
+            "learning_rate": float,
+            "lambda": float,
+            "deceptions": []
+        }
         
         for i in sizes:
             # Change the community size at each episode
@@ -212,6 +226,7 @@ class NodeHiding:
             # Change the target community
             self.reset_experiment()
             sizes.set_description(f"* * * Community Size {len(self.community_target)}")
+            
             steps = trange(len(self.community_target_nodes), desc="Testing Episode", leave=False)
             
             for step in steps:
@@ -271,6 +286,7 @@ class NodeHiding:
             algs=self.evaluation_algs,
             metrics=["nmi", "goal", "time", "steps"],
             budget=self.edge_budget,
+            dcmh_outs=self.dcmh_outs,
         )
 
     # Define a function to run each algorithm
@@ -343,7 +359,7 @@ class NodeHiding:
         """
 
         # Run the DCMH method
-        dcmh_graph, steps = self.dcmh_hiding.comm_evading()
+        dcmh_graph, steps = self.dcmh_hiding.comm_evading(self.dcmh_outs)
 
         # Compute the new community structure
         dcmh_communities = self.dcmh_hiding.detection_alg.compute_community(dcmh_graph, dcmh=True)
