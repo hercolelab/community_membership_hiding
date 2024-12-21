@@ -1,7 +1,7 @@
 # import sys
 # sys.path.append("../../../")
 from src.environment.graph_env import GraphEnvironment
-from src.utils.utils import DetectionAlgorithmsNames, Utils
+from src.utils.utils import DetectionAlgorithmsNames, Utils, editable_HyperParams
 from src.community_algs.detection_algs import CommunityDetectionAlgorithm
 
 import networkx as nx
@@ -57,7 +57,7 @@ class RandomHiding():
         communities = self.original_community_structure
         done = False
         steps = self.steps
-        random.seed(time.time())
+        random.seed(editable_HyperParams.seed)
         # TEST
         while steps > 0: # and not done:           
             
