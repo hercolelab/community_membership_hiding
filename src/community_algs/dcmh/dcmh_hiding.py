@@ -64,6 +64,7 @@ class DcmhHiding():
             "u": self.u,
             "tau": self.tau,
             "budget": self.budget,
+            "count_reinit": 0,
             "iterations": []
         }
 
@@ -157,6 +158,7 @@ class DcmhHiding():
                 else: 
                     break
         
+        temp_outs["count_reinit"] = count_reinit
         dcmh_outs["deceptions"].append(temp_outs)
         return g_prime, budget_used
     
