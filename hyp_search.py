@@ -53,8 +53,6 @@ def exp(cfg: DictConfig, save_path: str, wandb_cfg = None):
         sweep_path = save_path+f"/{run_name}"
         os.makedirs(sweep_path, exist_ok=True)
 
-    
-
         for dataset in datasets:
 
             for alg in detection_algs:
@@ -64,10 +62,10 @@ def exp(cfg: DictConfig, save_path: str, wandb_cfg = None):
                 cfg["dataset"] = dataset_names[dataset]
                 # ° ------  Agent Setup ----- ° #
                 agent = Agent(env=env)
-
-                log.info("Run name: {} - Dataset: {} - Detection Algorithm: {}".format(run_name,dataset_names[dataset], alg))
-                log.info(f"Output directory: {HydraConfig.get().runtime.output_dir}")
                 agent.env.set_communities(alg)
+
+                log.info("Run name: {} - Dataset: {} - Detection Algorithm: {}".format(run_name,dataset_names[dataset], agent.env.detection_alg))
+                log.info(f"Output directory: {HydraConfig.get().runtime.output_dir}")
                 cfg["test_alg"] = alg
 
                 # ° ------    TEST    ------ ° #

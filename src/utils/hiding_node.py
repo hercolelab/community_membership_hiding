@@ -212,6 +212,7 @@ class NodeHiding:
         self.dcmh_outs = {
             "dataset": self.env_name,
             "train_detection_alg": self.dcmh_config['train_alg'],
+            "test_detection_alg": self.dcmh_config['test_alg'],
             "seed": editable_HyperParams.seed,
             "max_iterations": int,
             "learning_rate": float,

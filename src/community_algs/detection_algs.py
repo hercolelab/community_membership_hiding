@@ -155,6 +155,7 @@ class CommunityDetectionAlgorithm(object):
         List[List[int]]
             list of list of vertices in each cluster
         """
+        random.seed(editable_HyperParams.seed)
         if args_louv is None:
             louv = graph.community_multilevel()
         else:
