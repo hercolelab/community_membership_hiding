@@ -34,6 +34,7 @@ class DcmhHiding():
 
         # Parameters
         self.T, self.lr, self.u, self.lambd, self.beta, self.tau, self.attention, self.reinit = self.get_evader_parameters(cfg)
+        self.seed = editable_HyperParams.seed
 
         # Variables
         self.neighbors = torch.LongTensor(self.graph.neighbors(self.u)).to(self.device)
@@ -63,6 +64,8 @@ class DcmhHiding():
             "u": self.u,
             "tau": self.tau,
             "budget": self.budget,
+            "count_reinit": 0,
+            "initial_point": [],
             "iterations": []
         }
 
@@ -73,6 +76,7 @@ class DcmhHiding():
         t = 0
         budget_used = 0
         goal = 0
+        count_reinit = 0
 
         # Network
         G = self.graph
@@ -87,7 +91,8 @@ class DcmhHiding():
 
         #Perturbation vector
         """We generate random vector s.t. threshold(tanh(x_hat)) = 0 """
-        x_hat, optimizer = self.initialize_perturbation_vector(n_nodes, self.lr, self.u, self.fixed_nodes, self.device)
+        x_hat, optimizer = self.initialize_perturbation_vector(n_nodes, self.lr, self.u, self.fixed_nodes, self.device, count_reinit)
+        temp_outs["initial_point"] = x_hat.detach().clone().cpu().numpy().tolist()
 
         #EVASION LOOP
         while goal==0 and t < self.T:
@@ -133,7 +138,8 @@ class DcmhHiding():
             
             if budget_used > self.budget:
                 if self.reinit: 
-                    x_hat, optimizer = self.initialize_perturbation_vector(n_nodes, self.lr, self.u, self.fixed_nodes, self.device) 
+                    count_reinit += 1
+                    x_hat, optimizer = self.initialize_perturbation_vector(n_nodes, self.lr, self.u, self.fixed_nodes, self.device, count_reinit) 
                     # Restore parameters for evasion loop
                     goal = 0 
                     budget_used=0
@@ -145,7 +151,8 @@ class DcmhHiding():
 
             if budget_used == self.budget and goal==0:
                 if self.reinit: 
-                    x_hat, optimizer = self.initialize_perturbation_vector(n_nodes, self.lr, self.u, self.fixed_nodes, self.device)
+                    count_reinit += 1
+                    x_hat, optimizer = self.initialize_perturbation_vector(n_nodes, self.lr, self.u, self.fixed_nodes, self.device, count_reinit)
                     # Restore parameters for evasion loop
                     budget_used=0
                     history.append(a_u)
@@ -153,6 +160,7 @@ class DcmhHiding():
                 else: 
                     break
         
+        temp_outs["count_reinit"] = count_reinit
         dcmh_outs["deceptions"].append(temp_outs)
         return g_prime, budget_used
     
@@ -357,7 +365,8 @@ class DcmhHiding():
             lr: float, 
             u: int, 
             fixed_nodes: torch.Tensor, 
-            device: torch.device
+            device: torch.device,
+            count_reinit: int
         ) -> Tuple[torch.Tensor, torch.optim.Optimizer]:
         """
         Initialize the perturbation vector s.t. threshold(tanh(x_hat)) = 0.
@@ -372,6 +381,10 @@ class DcmhHiding():
             The target node.
         fixed_nodes
             The fixed nodes, e.g. neighbours with degree 1.
+        device
+            The device.
+        count_reinit
+            The number of reinitializations.
         
         Returns
         -------
@@ -380,8 +393,8 @@ class DcmhHiding():
         optimizer
             The optimizer.
         """
-        torch.seed()
-        x_hat = (2*torch.rand(n_nodes, device=device) - 1)*0.5
+        gen = torch.Generator(device=device).manual_seed(self.seed + count_reinit)
+        x_hat = (2*torch.rand(n_nodes, device=device, generator=gen) - 1)*0.5
         x_hat[u] = torch.Tensor([0])
         x_hat[fixed_nodes] = torch.Tensor([0])
 

@@ -118,9 +118,9 @@ def exp(cfg: DictConfig, save_path: str, wandb_cfg = None):
                         wandb.log({"f1": f1_score})
 
                         #Remove results to save space
-                        os.remove(evaluation_path)
-                        os.remove(f"{node_hiding.path_to_save}"+"dcmh_outputs.json")
-                        shutil.rmtree(sweep_path)
+                        #os.remove(evaluation_path)
+                        #os.remove(f"{node_hiding.path_to_save}"+"dcmh_outputs.json")
+                        #shutil.rmtree(sweep_path)
 
 log = logging.getLogger(__name__)
 @hydra.main(config_path="src/community_algs/dcmh/conf", config_name="base", version_base=None)
