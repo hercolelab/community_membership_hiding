@@ -65,6 +65,7 @@ class DcmhHiding():
             "tau": self.tau,
             "budget": self.budget,
             "count_reinit": 0,
+            "initial_point": [],
             "iterations": []
         }
 
@@ -91,6 +92,7 @@ class DcmhHiding():
         #Perturbation vector
         """We generate random vector s.t. threshold(tanh(x_hat)) = 0 """
         x_hat, optimizer = self.initialize_perturbation_vector(n_nodes, self.lr, self.u, self.fixed_nodes, self.device, count_reinit)
+        temp_outs["initial_point"] = x_hat.detach().clone().cpu().numpy().tolist()
 
         #EVASION LOOP
         while goal==0 and t < self.T:
@@ -391,8 +393,8 @@ class DcmhHiding():
         optimizer
             The optimizer.
         """
-        torch.manual_seed(self.seed + count_reinit)
-        x_hat = (2*torch.rand(n_nodes, device=device) - 1)*0.5
+        gen = torch.Generator(device=device).manual_seed(self.seed + count_reinit)
+        x_hat = (2*torch.rand(n_nodes, device=device, generator=gen) - 1)*0.5
         x_hat[u] = torch.Tensor([0])
         x_hat[fixed_nodes] = torch.Tensor([0])
 
