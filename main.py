@@ -35,16 +35,16 @@ def main(cfg: DictConfig):
 
     datasets = [
         #FilePaths.KAR.value,
-        FilePaths.WORDS.value,
-        #FilePaths.VOTE.value,
+        #FilePaths.WORDS.value,
+        FilePaths.VOTE.value,
         # FilePaths.NETS.value,
         #FilePaths.POW.value,
         #FilePaths.FB_75.value,
         # FilePaths.ASTR.value,
     ]
     detection_algs = [
-        DetectionAlgorithmsNames.GRE.value,
-        DetectionAlgorithmsNames.LOUV.value,
+        #DetectionAlgorithmsNames.GRE.value,
+        #DetectionAlgorithmsNames.LOUV.value,
         DetectionAlgorithmsNames.WALK.value,
     ]
 
