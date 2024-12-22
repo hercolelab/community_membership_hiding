@@ -117,9 +117,9 @@ def main(cfg: DictConfig) -> None:
         "method": "bayes",
         "metric": {"name": "f1", "goal": "maximize"},
         "parameters": {
-            "max_it": {"values": list(range(50, 110,10))},
-            "lr": {"min": 0.0001, "max": 0.1},
-            "lambd": {"min": 0.001, "max": 25.0},
+            "max_it": {"values": list(range(50, 160,10))},
+            "lr": {"min": 0.00001, "max": 0.01},
+            "lambd": {"min": 0.1, "max": 100.0},
         },
     }
 
