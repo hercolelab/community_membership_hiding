@@ -118,8 +118,8 @@ def main(cfg: DictConfig) -> None:
         "metric": {"name": "f1", "goal": "maximize"},
         "parameters": {
             "max_it": {"values": list(range(50, 110,10))},
-            "lr": {"min": 0.001, "max": 0.5},
-            "lambd": {"min": 0.001, "max": 5.0},
+            "lr": {"min": 0.0001, "max": 0.1},
+            "lambd": {"min": 0.001, "max": 25.0},
         },
     }
 
