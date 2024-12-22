@@ -1,6 +1,6 @@
 """Module for the GraphEnviroment class"""
 from src.community_algs.detection_algs import CommunityDetectionAlgorithm
-from src.utils.utils import HyperParams, editable_HyperParams, SimilarityFunctionsNames, Utils
+from src.utils.utils import HyperParams, SimilarityFunctionsNames, Utils
 from src.community_algs.metrics.similarity import CommunitySimilarity, GraphSimilarity
 from typing import List, Tuple, Callable
 
@@ -48,7 +48,7 @@ class GraphEnvironment(object):
         """
         
         self.device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-        self.seed = editable_HyperParams.seed
+        self.seed = HyperParams.SEED.value
         random.seed(self.seed)
 
         # ° ---- GRAPH ---- ° #
@@ -503,6 +503,7 @@ class GraphEnvironment(object):
         self.old_penalty_value = 0
         # Compute the community structure of the graph, before the action,
         # i.e. before the deception
+        random.seed(HyperParams.SEED.value)
         self.original_community_structure = self.detection.compute_community(self.graph)
         # ! It is a NodeClustering object
         self.old_community_structure = self.original_community_structure

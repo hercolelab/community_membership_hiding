@@ -73,14 +73,12 @@ class SimilarityFunctionsNames(Enum):
     JAC_1 = "jaccard_1"
     JAC_2 = "jaccard_2"
 
-class editable_HyperParams:
-    seed = 22
 
 class HyperParams(Enum):
     """Hyperparameters for the Environment"""
 
     # ! REAL GRAPH Graph path (change the following line to change the graph)
-    GRAPH_NAME = FilePaths.KAR.value
+    GRAPH_NAME = FilePaths.WORDS.value
     # ! Define the detection algorithm to use (change the following line to change the algorithm)
     DETECTION_ALG_NAME = DetectionAlgorithmsNames.LOUV.value
     # Multiplier for the rewiring action number, i.e. (mean_degree * BETA)
@@ -193,7 +191,7 @@ class HyperParams(Enum):
     # Maximum number of iterations to try to create the community sizes, degree distribution, and community affiliations.
     MAX_ITERS = 5000
     # Seed for the random number generator.
-    SEED = 10
+    SEED = 22
 
 
 class Utils:

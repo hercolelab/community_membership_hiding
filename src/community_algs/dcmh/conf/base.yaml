@@ -1,7 +1,7 @@
 dataset: kar
 train_alg: greedy
 test_alg: greedy
-
+seed: 22
 attention: True
 reinitialization: True
 dist_f: frobenius_dist

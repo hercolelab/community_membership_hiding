@@ -1,4 +1,4 @@
-from src.utils.utils import editable_HyperParams, HyperParams, Utils, FilePaths, DetectionAlgorithmsNames
+from src.utils.utils import HyperParams, Utils, FilePaths, DetectionAlgorithmsNames
 from src.environment.graph_env import GraphEnvironment
 from src.agent.agent import Agent
 
@@ -43,8 +43,8 @@ def main(cfg: DictConfig):
         # FilePaths.ASTR.value,
     ]
     detection_algs = [
-        DetectionAlgorithmsNames.GRE.value,
-        #DetectionAlgorithmsNames.LOUV.value,
+        #DetectionAlgorithmsNames.GRE.value,
+        DetectionAlgorithmsNames.LOUV.value,
         #DetectionAlgorithmsNames.WALK.value,
     ]
 
@@ -63,7 +63,6 @@ def main(cfg: DictConfig):
 
             log.info("Dataset: {} - Detection Algorithm: {}".format(env.env_name, alg))
             log.info(f"Output directory: {HydraConfig.get().runtime.output_dir}")
-            agent.env.set_communities(alg)
             cfg["test_alg"] = alg
 
             # ° ------    TRAIN    ------ ° #

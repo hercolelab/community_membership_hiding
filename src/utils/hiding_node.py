@@ -1,5 +1,5 @@
 from re import S
-from src.utils.utils import editable_HyperParams,HyperParams, Utils, FilePaths
+from src.utils.utils import HyperParams, Utils, FilePaths
 from src.environment.graph_env import GraphEnvironment
 from src.agent.agent import Agent
 
@@ -139,10 +139,10 @@ class NodeHiding:
             # Copy the community target to avoid modifying the original one
             self.community_target = copy.deepcopy(self.agent.env.community_target)
             max_deceptions = 100
-            random.seed(editable_HyperParams.seed)
             if len(self.community_target) < max_deceptions:
                 self.community_target_nodes = self.community_target.copy()
             else:
+                random.seed(HyperParams.SEED.value)
                 random.shuffle(self.community_target)
                 self.community_target_nodes = self.community_target[:max_deceptions]
             
@@ -213,7 +213,7 @@ class NodeHiding:
             "dataset": self.env_name,
             "train_detection_alg": self.dcmh_config['train_alg'],
             "test_detection_alg": self.dcmh_config['test_alg'],
-            "seed": editable_HyperParams.seed,
+            "seed": HyperParams.SEED.value,
             "max_iterations": int,
             "learning_rate": float,
             "lambda": float,

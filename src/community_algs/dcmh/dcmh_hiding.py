@@ -1,5 +1,5 @@
 from src.environment.graph_env import GraphEnvironment
-from src.utils.utils import DetectionAlgorithmsNames, Utils, editable_HyperParams
+from src.utils.utils import DetectionAlgorithmsNames, Utils, HyperParams
 from src.community_algs.detection_algs import CommunityDetectionAlgorithm
 
 import networkx as nx
@@ -34,7 +34,7 @@ class DcmhHiding():
 
         # Parameters
         self.T, self.lr, self.u, self.lambd, self.beta, self.tau, self.attention, self.reinit = self.get_evader_parameters(cfg)
-        self.seed = editable_HyperParams.seed
+        self.seed = HyperParams.SEED.value
 
         # Variables
         self.neighbors = torch.LongTensor(self.graph.neighbors(self.u)).to(self.device)
@@ -393,24 +393,10 @@ class DcmhHiding():
         optimizer
             The optimizer.
         """
-        gen = torch.Generator(device=device).manual_seed(self.seed + count_reinit)
-        x_hat = (2*torch.rand(n_nodes, device=device, generator=gen) - 1)*0.5
+        torch.manual_seed(self.seed + count_reinit)
+        x_hat = (2*torch.rand(n_nodes, device=device) - 1)*0.5
         x_hat[u] = torch.Tensor([0])
         x_hat[fixed_nodes] = torch.Tensor([0])
-
-        """
-        Possibility to add memory property on the algorithm
-        --- TO THINK ABOUT IT ---
-        """
-        """
-        #changed_nodes = set()
-        #for change_type in changes.values():
-            #for node_pair in change_type:
-                #changed_nodes.update(node_pair)
-        #changed_nodes.discard(u)
-        #x_hat[list(changed_nodes)] = torch.Tensor([0])
-        #log.info(torch.tanh(x_hat))
-        """
         x_hat = x_hat.requires_grad_(True)
         optimizer = optim.Adam([x_hat], lr=lr)
         return x_hat,optimizer

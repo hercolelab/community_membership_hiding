@@ -2,7 +2,7 @@
 # import sys
 # sys.path.append('../../')
 from src.utils.utils import DetectionAlgorithmsNames
-from src.utils.utils import editable_HyperParams
+from src.utils.utils import HyperParams
 from typing import List
 
 from cdlib import algorithms
@@ -72,7 +72,7 @@ class CommunityDetectionAlgorithm(object):
 
         # Rename DetectionAlgorithms Enum to da for convenience
         da = DetectionAlgorithmsNames
-        random.seed(editable_HyperParams.seed)
+        random.seed(HyperParams.SEED.value)
         # Choose the algorithm
         if self.alg_name == da.LOUV.value:
             return self.compute_louv(graph, args)
@@ -155,7 +155,7 @@ class CommunityDetectionAlgorithm(object):
         List[List[int]]
             list of list of vertices in each cluster
         """
-        random.seed(editable_HyperParams.seed)
+        random.seed(HyperParams.SEED.value)
         if args_louv is None:
             louv = graph.community_multilevel()
         else:
