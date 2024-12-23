@@ -127,8 +127,8 @@ vote:
             lambd: 3.40
         beta_2:
             T: 80
-            lr : 0.0958
-            lambd: 14.96
+            lr : 0.0855
+            lambd: 14.51
     testing_walktrap:
       tau_0.5:
         beta_0.5:
