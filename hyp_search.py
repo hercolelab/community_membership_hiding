@@ -124,7 +124,7 @@ def main(cfg: DictConfig) -> None:
     }
 
     sweep_id = wandb.sweep(sweep_config, project=f"dcmh_hyp_search {cfg['dataset']} {cfg['test_alg']} tau_{cfg['tau']} beta_{cfg['beta']}")
-    wandb.agent(sweep_id, function=lambda: exp(cfg, save_path, agent), count=60)
+    wandb.agent(sweep_id, function=lambda: exp(cfg, save_path, agent), count=50)
 
 
 if __name__ == "__main__":

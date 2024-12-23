@@ -163,7 +163,7 @@ class NodeHiding:
             graph = self.ig_original_graph,
             old_communities=self.community_structure,
         )       
-
+        """
         # Baseline algorithms
         self.random_hiding = RandomHiding(
             env=self.agent.env,
@@ -190,6 +190,7 @@ class NodeHiding:
             steps=self.edge_budget,
             target_community=self.community_target,
         )
+        """
 
 
     ############################################################################
