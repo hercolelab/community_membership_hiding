@@ -150,45 +150,45 @@ pow:
     testing_greedy:
       tau_0.5:
         beta_0.5:
-            T: 120
-            lr : 0.0063
-            lambd: 21
+            T: 70
+            lr : 0.00993
+            lambd: 0.4525
         beta_1:
-            T: 200
-            lr : 0.0072
-            lambd: 18.5
+            T: 100
+            lr : 0.00644
+            lambd: 24.848
         beta_2:
-            T: 260
-            lr : 0.0083
-            lambd: 0.39
+            T: 100
+            lr : 0.00192
+            lambd: 20.193
     testing_louvain:
       tau_0.5:
         beta_0.5:
-            T: 270
-            lr : 0.0038
-            lambd: 8.97
+            T: 90
+            lr : 0.00238
+            lambd: 13.59
         beta_1:
-            T: 210
-            lr : 0.0014
-            lambd: 5.26
+            T: 140
+            lr : 0.000828
+            lambd: 17.8519
         beta_2:
-            T: 240
-            lr : 0.0055
-            lambd: 2.29
+            T: 60
+            lr : 0.00815
+            lambd: 24.8642
     testing_walktrap:
       tau_0.5:
         beta_0.5:
-            T: 280
-            lr : 0.0064
-            lambd: 29.26
+            T: 120
+            lr : 0.0064854
+            lambd: 30.45214
         beta_1:
-            T: 300
-            lr : 0.0074
-            lambd: 26.84
+            T: 140
+            lr : 0.0073601
+            lambd: 29.59273
         beta_2:
-            T: 220
-            lr : 0.0066
-            lambd: 36.8
+            T: 50
+            lr : 0.0048928
+            lambd: 17.61626
 
 fb:
   training_greedy:
