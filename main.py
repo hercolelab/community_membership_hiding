@@ -34,11 +34,11 @@ log = logging.getLogger(__name__)
 def main(cfg: DictConfig):
 
     datasets = [
-        #FilePaths.KAR.value,
+        FilePaths.KAR.value,
         #FilePaths.WORDS.value,
         #FilePaths.VOTE.value,
         # FilePaths.NETS.value,
-        FilePaths.POW.value,
+        #FilePaths.POW.value,
         #FilePaths.FB_75.value,
         # FilePaths.ASTR.value,
     ]

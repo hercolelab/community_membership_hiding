@@ -457,12 +457,13 @@ class DcmhHiding():
             The evader configuration for a specific dataset.
         """
         dataset = cfg["dataset"]
-        train_alg = cfg["train_alg"]
+        #train_alg = cfg["train_alg"]
         test_alg = cfg["test_alg"]
         tau = cfg["tau"]
         beta = cfg["beta"]
         try:
-            evader_cfg = cfg[dataset][f"training_{train_alg}"][f"testing_{test_alg}"][f"tau_{tau}"][f"beta_{beta}"]
+            #evader_cfg = cfg[dataset][f"training_{train_alg}"][f"testing_{test_alg}"][f"tau_{tau}"][f"beta_{beta}"]
+            evader_cfg = cfg[dataset][f"testing_{test_alg}"][f"tau_{tau}"][f"beta_{beta}"]
         except KeyError:
             raise ValueError("Combination of hyperparameters not found")
         return evader_cfg
