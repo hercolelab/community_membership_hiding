@@ -38,8 +38,8 @@ def main(cfg: DictConfig):
         #FilePaths.WORDS.value,
         #FilePaths.VOTE.value,
         # FilePaths.NETS.value,
-        FilePaths.POW.value,
-        #FilePaths.FB_75.value,
+        #FilePaths.POW.value,
+        FilePaths.FB_75.value,
         # FilePaths.ASTR.value,
     ]
     detection_algs = [
@@ -118,7 +118,7 @@ def main(cfg: DictConfig):
     save_time = False
     if save_time:
         Utils.plot_time_all_datasets(
-            datasets= [FilePaths.KAR.value,FilePaths.WORDS.value, FilePaths.VOTE.value, FilePaths.POW.value],
+            datasets= [FilePaths.KAR.value,FilePaths.WORDS.value, FilePaths.VOTE.value, FilePaths.POW.value, FilePaths.FB_75.value],
             detection_algs= [ DetectionAlgorithmsNames.GRE.value, DetectionAlgorithmsNames.LOUV.value,DetectionAlgorithmsNames.WALK.value],
             taus=[0.5],
             betas=[0.5,1,2],
