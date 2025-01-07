@@ -8,6 +8,7 @@ dist_f: frobenius_dist
 u: 0
 tau: 0.5
 beta: 1
+attention_coeffs: [0.333, 0.333, 0.167, 0.167]
 
 kar:
   testing_greedy:

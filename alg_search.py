@@ -107,7 +107,7 @@ def main(cfg: DictConfig) -> None:
         "method": "grid",
         "metric": {"name": "f1", "goal": "maximize"},
         "parameters": {
-            "algorithm": {"values": ["louvain", "walktrap", "greedy", "infomap", "label_propagation", "eigenvector", "edge_betweenness", "spinglass"]},
+            "algorithm": {"values": ["louvain", "walktrap", "greedy", "infomap", "label_propagation", "edge_betweenness", "spinglass"]},
         },
     }
 
