@@ -34,9 +34,9 @@ log = logging.getLogger(__name__)
 def main(cfg: DictConfig):
 
     datasets = [
-        FilePaths.KAR.value,
+        #FilePaths.KAR.value,
         #FilePaths.WORDS.value,
-        #FilePaths.VOTE.value,
+        FilePaths.VOTE.value,
         # FilePaths.NETS.value,
         #FilePaths.POW.value,
         #FilePaths.FB_75.value,
@@ -88,8 +88,8 @@ def main(cfg: DictConfig):
                 # BETAs defines the number of actions to perform
                 # Beta for the node hiding task is a multiplier of mean degree of the
                 # the graph
-                #node_betas = [0.5, 1, 2]
-                node_betas = [1]
+                node_betas = [0.5, 1, 2]
+                #node_betas = [2]
 
                 # Initialize the test class
                 node_hiding = NodeHiding(agent=agent, model_path=model_path, dcmh_config=cfg)

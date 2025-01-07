@@ -1,4 +1,4 @@
-dataset: karate
+dataset: kar
 train_alg: greedy
 test_alg: greedy
 
@@ -8,11 +8,11 @@ dist_f: frobenius_dist
 u: 0
 tau: 0.5
 budget_factor: 1
-attention_coeffs: [0.3333333333333333, 0.3333333333333333, 0.16666666666666666, 0.16666666666666666]
 
 kar:
   training_greedy:
     testing_greedy:
+      attention_coeffs: [0.713385915481054, 0.1346800221052267, 0.10264636655226009, 0.049287695861459285]
       tau_0.5:
         beta_0.5:
             T: 60
@@ -27,6 +27,7 @@ kar:
             lr : 0.237
             lambd: 3.436
     testing_louvain:
+      attention_coeffs: [0.713385915481054, 0.1346800221052267, 0.10264636655226009, 0.049287695861459285]
       tau_0.5:
         beta_0.5:
             T: 100
@@ -41,6 +42,7 @@ kar:
             lr : 0.388
             lambd: 1.854
     testing_walktrap:
+      attention_coeffs: [0.3333333333333333, 0.3333333333333333, 0.16666666666666666, 0.16666666666666666]
       tau_0.5:
         beta_0.5:
             T: 70
@@ -58,6 +60,7 @@ kar:
 words:
   training_greedy:
     testing_greedy:
+      attention_coeffs: [0.0004028761034536307, 0.053901189311128125, 0.08197490788515284, 0.8637210267002654]
       tau_0.5:
         beta_0.5:
             T: 60
@@ -72,6 +75,7 @@ words:
             lr : 0.01
             lambd: 1.225
     testing_louvain:
+      attention_coeffs: [0.0004028761034536307, 0.053901189311128125, 0.08197490788515284, 0.8637210267002654]
       tau_0.5:
         beta_0.5:
             T: 60
@@ -86,6 +90,7 @@ words:
             lr : 0.169
             lambd: 1.318
     testing_walktrap:
+      attention_coeffs: [0.0004028761034536307, 0.053901189311128125, 0.08197490788515284, 0.8637210267002654]
       tau_0.5:
         beta_0.5:
             T: 90
@@ -103,6 +108,7 @@ words:
 vote:
   training_greedy:
     testing_greedy:
+      attention_coeffs: [0.018328100446691, 0.06229124046212699, 0.00036560831973974484, 0.9190150507714423]
       tau_0.5:
         beta_0.5:
             T: 100
@@ -117,6 +123,7 @@ vote:
             lr : 0.0424
             lambd: 15.4
     testing_louvain:
+      attention_coeffs: [0.018328100446691, 0.06229124046212699, 0.00036560831973974484, 0.9190150507714423]
       tau_0.5:
         beta_0.5:
             T: 100
@@ -131,6 +138,7 @@ vote:
             lr : 0.0855
             lambd: 14.51
     testing_walktrap:
+      attention_coeffs: [0.3333333333333333, 0.3333333333333333, 0.16666666666666666, 0.16666666666666666]
       tau_0.5:
         beta_0.5:
             T: 90

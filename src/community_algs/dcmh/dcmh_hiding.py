@@ -317,7 +317,7 @@ class DcmhHiding():
         torch.Tensor
             The averaged importance scores.
         """
-        coeffs = self.cfg["attention_coeffs"]
+        coeffs = self.cfg[f'{self.cfg["dataset"]}'][f'training_{self.cfg["train_alg"]}'][f'testing_{self.cfg["test_alg"]}']["attention_coeffs"]
 
         #Centrality score -- attention1
         centrality = np.array(G.betweenness(directed=False))
