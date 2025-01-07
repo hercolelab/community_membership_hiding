@@ -317,6 +317,7 @@ class DcmhHiding():
         torch.Tensor
             The averaged importance scores.
         """
+        coeffs = self.cfg["attention_coeffs"]
 
         #Centrality score -- attention1
         centrality = np.array(G.betweenness(directed=False))
@@ -353,11 +354,9 @@ class DcmhHiding():
             scaled_degrees = (ranks - 1) / (len(ranks) - 1) 
             att3b[inter_c_nodes] = scaled_degrees
 
-        att3 = (att3a + att3b)/2
-
-
         #Attention by aggregation
-        return (att1 + att2 + att3)/3
+        att = coeffs[0]*att1 + coeffs[1]*att2 + coeffs[2]*att3a + coeffs[3]*att3b
+        return att
     
     def initialize_perturbation_vector(
             self,

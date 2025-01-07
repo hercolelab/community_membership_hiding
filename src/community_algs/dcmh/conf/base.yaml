@@ -8,6 +8,7 @@ dist_f: frobenius_dist
 u: 0
 tau: 0.5
 budget_factor: 1
+attention_coeffs: [0.3333333333333333, 0.3333333333333333, 0.16666666666666666, 0.16666666666666666]
 
 kar:
   training_greedy:
