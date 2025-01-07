@@ -7,6 +7,7 @@ from src.community_algs.detection_algs import CommunityDetectionAlgorithm
 import networkx as nx
 from typing import List, Callable, Tuple
 import random
+import numpy as np
 import copy
 
 
@@ -21,7 +22,7 @@ class GreedyHiding:
         self.original_community_structure = copy.deepcopy(
             self.env.original_community_structure
         )
-        self.possible_edges = self.get_possible_action()
+        #self.possible_edges = self.get_possible_action()
 
         self.alpha_metric = 0.7
 
@@ -29,7 +30,7 @@ class GreedyHiding:
         self,
         community: List[int],
         graph: nx.Graph,
-    ) -> List[int]:
+    ) -> int:
         """
         For each node in the community, different from the target node,
         compute the intra-community degree, and return the node with the
@@ -46,6 +47,8 @@ class GreedyHiding:
         node : int
             Node with the highest intra-community degree
         """
+        """
+        #OLD VERSION
         # Set the max degree to - infinity
         max_degree = -float("inf")
         node = None
@@ -72,6 +75,12 @@ class GreedyHiding:
                 max_degree = intra_degree
                 node = n
         return node
+        """
+        subgraph = graph.subgraph(community)
+        node = max(community, key=lambda x: subgraph.degree(x))
+        return node
+
+
 
     def get_inter_community_node(
         self, community: List[int], graph: nx.Graph
