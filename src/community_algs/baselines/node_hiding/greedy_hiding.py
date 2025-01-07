@@ -77,7 +77,8 @@ class GreedyHiding:
         return node
         """
         subgraph = graph.subgraph(community)
-        node = max(community, key=lambda x: subgraph.degree(x))
+        neighbors = list(subgraph.neighbors(self.target_node))
+        node = max(neighbors, key=lambda x: subgraph.degree(x))
         return node
 
 
