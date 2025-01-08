@@ -31,6 +31,7 @@ class FilePaths(Enum):
     KAR = DATASETS_DIR + "/kar.mtx"
     WORDS = DATASETS_DIR + "/words.mtx"
     VOTE = DATASETS_DIR + "/vote.mtx"
+    DBLP = DATASETS_DIR + "/dblp.txt"
 
     # DIAG DATASETS
     AMZ = DATASETS_DIR + "/amz.gml"
@@ -158,7 +159,7 @@ class HyperParams(Enum):
 
     """Evaluation Parameters"""
     # ! Change the following parameters according to the hyperparameters to test
-    STEPS_EVAL = 100
+    STEPS_EVAL = 1
     LR_EVAL = 0.0001  # LR[0]
     GAMMA_EVAL = 0.7  # GAMMA[0]
     LAMBDA_EVAL = 0.1  # LAMBDA[0]

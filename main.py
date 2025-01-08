@@ -26,6 +26,7 @@ dataset_names = {
     FilePaths.POW.value: "pow",
     FilePaths.FB_75.value: "fb",
     FilePaths.ASTR.value: "astr",
+    FilePaths.DBLP.value: "dblp",
 }
 
 
@@ -34,17 +35,16 @@ log = logging.getLogger(__name__)
 def main(cfg: DictConfig):
 
     datasets = [
-        FilePaths.KAR.value,
+        #FilePaths.KAR.value,
         #FilePaths.WORDS.value,
         #FilePaths.VOTE.value,
-        # FilePaths.NETS.value,
         #FilePaths.POW.value,
         #FilePaths.FB_75.value,
-        # FilePaths.ASTR.value,
+        FilePaths.DBLP.value,
     ]
     detection_algs = [
-        #DetectionAlgorithmsNames.GRE.value,
-        DetectionAlgorithmsNames.LOUV.value,
+        DetectionAlgorithmsNames.GRE.value,
+        #DetectionAlgorithmsNames.LOUV.value,
         #DetectionAlgorithmsNames.WALK.value,
     ]
 
