@@ -22,7 +22,8 @@ class GreedyHiding:
         self.original_community_structure = copy.deepcopy(
             self.env.original_community_structure
         )
-        #self.possible_edges = self.get_possible_action()
+        self.coin = None
+        self.possible_edges_add, self.possible_edges_remove = self.get_possible_action()
 
         self.alpha_metric = 0.7
 
@@ -145,20 +146,23 @@ class GreedyHiding:
         return loss
 
     def get_possible_action(self):
-        # Put all edge between the target node and its neighbors in a list
+        # Put all edge between the target node and its neighbors within the community in a list with intra-degree
         possible_actions_remove = []
-        for neighbor in self.graph.neighbors(self.target_node):
-            possible_actions_remove.append((self.target_node, neighbor))
-
-        # Put all the edges that aren't neighbors of the target node in a list
+        subgraph = self.graph.subgraph(self.target_community)
+        if self.target_node in subgraph:
+            neighbors = list(subgraph.neighbors(self.target_node))
+            for n in neighbors:
+                possible_actions_remove.append((self.target_node, n, subgraph.degree(n)))
+        possible_actions_remove.sort(key=lambda x: x[2], reverse=True)
+            
+        # Put all the edges that aren't inside the community in a list with degree
         possible_actions_add = []
-        for node in self.graph.nodes():
-            if node != self.target_node and node not in self.graph.neighbors(
-                self.target_node
-            ):
-                possible_actions_add.append((self.target_node, node))
-        possible_action = possible_actions_add + possible_actions_remove
-        return possible_action
+        inter_community_nodes = set(self.graph.nodes()) - set(self.target_community)
+        inter_community_nodes -= set(self.graph.neighbors(self.target_node))
+        for n in inter_community_nodes:
+            possible_actions_add.append((self.target_node, n, self.graph.degree(n)))
+        possible_actions_add.sort(key=lambda x: x[2], reverse=True)
+        return possible_actions_add, possible_actions_remove
 
     def hide_target_node_from_community(self) -> Tuple[nx.Graph, List[int], int]:
         """
@@ -173,9 +177,13 @@ class GreedyHiding:
         graph = self.graph.copy()
         communities = self.original_community_structure
         steps = self.steps
-        target_community = self.target_community.copy()
+        #target_community = self.target_community.copy()
 
         while steps > 0:
+
+            """
+            #OLD VERSION: too slow!
+
             # Get the inter-community node with the highest degree, (add edge)
             candidate_1 = self.get_inter_community_node(target_community, graph)
 
@@ -227,13 +235,40 @@ class GreedyHiding:
                 graph = graph_2
                 communities = communities_2
                 target_community = self.get_new_community(communities_2)
+            """
+            if self.coin is None:
+                self.coin = random.choice([0, 1])
+            
+            if self.coin == 0:
+                if len(self.possible_edges_add) == 0:
+                    self.coin = 1
+                    edge = self.possible_edges_remove.pop(0)
+                    edge = (edge[0], edge[1])
+                    graph.remove_edge(*edge)
+                else: 
+                    # Get the inter-community node with the highest degree, (add edge)
+                    edge = self.possible_edges_add.pop(0)
+                    edge = (edge[0], edge[1])
+                    graph.add_edge(*edge)
+                    self.coin = 1
+
+            else:
+                if len(self.possible_edges_remove) == 0:
+                    self.coin = 0
+                    edge = self.possible_edges_add.pop(0)
+                    edge = (edge[0], edge[1])
+                    graph.add_edge(*edge)
+                else:
+                    # Get the intra-community node with the highest degree, (remove edge)
+                    edge = self.possible_edges_remove.pop(0)
+                    edge = (edge[0], edge[1])
+                    graph.remove_edge(*edge)
+                    self.coin = 0
 
             steps -= 1
 
-            if len(target_community) < 2:
-                break
-
         step = self.steps - steps
+        communities = self.detection_alg.compute_community(graph)
         return graph, communities, step
 
     def get_new_community(self, new_community_structure: List[List[int]]) -> List[int]:
