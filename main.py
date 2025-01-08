@@ -16,7 +16,7 @@ from hydra.core.hydra_config import HydraConfig
 
 # Variables to choose the mode of the script
 TRAIN = False
-TEST = True
+TEST = False
 
 dataset_names = {
     FilePaths.KAR.value: "kar",
@@ -36,16 +36,16 @@ def main(cfg: DictConfig):
     datasets = [
         #FilePaths.KAR.value,
         #FilePaths.WORDS.value,
-        FilePaths.VOTE.value,
+        #FilePaths.VOTE.value,
         # FilePaths.NETS.value,
-        #FilePaths.POW.value,
+        FilePaths.POW.value,
         #FilePaths.FB_75.value,
         # FilePaths.ASTR.value,
     ]
     detection_algs = [
         #DetectionAlgorithmsNames.GRE.value,
-        #DetectionAlgorithmsNames.LOUV.value,
-        DetectionAlgorithmsNames.WALK.value,
+        DetectionAlgorithmsNames.LOUV.value,
+        #DetectionAlgorithmsNames.WALK.value,
     ]
 
     with open("src/community_algs/dcmh/conf/base.yaml", "r") as file:
@@ -88,8 +88,8 @@ def main(cfg: DictConfig):
                 # BETAs defines the number of actions to perform
                 # Beta for the node hiding task is a multiplier of mean degree of the
                 # the graph
-                node_betas = [0.5, 1, 2]
-                #node_betas = [2]
+                #node_betas = [0.5, 1, 2]
+                node_betas = [1]
 
                 # Initialize the test class
                 node_hiding = NodeHiding(agent=agent, model_path=model_path, dcmh_config=cfg)
@@ -107,21 +107,27 @@ def main(cfg: DictConfig):
                         node_hiding.run_experiment()
 
 
-    save_f1 = False
+    save_f1 = True
     if save_f1:
         Utils.plot_f1_all_datasets(
-            datasets= [FilePaths.KAR.value,FilePaths.WORDS.value, FilePaths.VOTE.value, FilePaths.POW.value],
+            datasets= [FilePaths.KAR.value,FilePaths.WORDS.value, FilePaths.VOTE.value, FilePaths.POW.value, FilePaths.FB_75.value],
             detection_algs= [ DetectionAlgorithmsNames.GRE.value, DetectionAlgorithmsNames.LOUV.value,DetectionAlgorithmsNames.WALK.value],
+            #detection_algs= [ DetectionAlgorithmsNames.GRE.value, DetectionAlgorithmsNames.LOUV.value],
+            detection_algs= [ DetectionAlgorithmsNames.WALK.value],
             taus=[0.5],
             betas=[0.5,1,2],
+            #betas=[0.5,1],
         )
-    save_time = False
+    save_time = True
     if save_time:
         Utils.plot_time_all_datasets(
             datasets= [FilePaths.KAR.value,FilePaths.WORDS.value, FilePaths.VOTE.value, FilePaths.POW.value, FilePaths.FB_75.value],
             detection_algs= [ DetectionAlgorithmsNames.GRE.value, DetectionAlgorithmsNames.LOUV.value,DetectionAlgorithmsNames.WALK.value],
+            #detection_algs= [ DetectionAlgorithmsNames.GRE.value, DetectionAlgorithmsNames.LOUV.value],
+            #detection_algs= [ DetectionAlgorithmsNames.WALK.value],
             taus=[0.5],
             betas=[0.5,1,2],
+            #betas=[0.5,1],
         )
 
 if __name__ == "__main__":

@@ -647,7 +647,7 @@ class Utils:
                         aspect=2,
                         palette=palette,
                         errorbar="ci",
-                        # errorbar=df_confidence_binary_test,
+                        #errorbar=df_confidence_binary_test,
                     )
                     g.set_axis_labels("Datasets", f"Mean {metric.capitalize()}", fontsize=15)
                     sns.move_legend(g, "upper right", bbox_to_anchor=(1, 0.7), frameon=False)
@@ -743,22 +743,23 @@ class Utils:
                     for dataset in datasets:
                         dict = time_dict[dataset][detection_alg][f"tau_{tau}"][f"beta_{beta}"]
                         plot_data.append(dict)
-                    time_agent_mean = [dict["Agent"]["mean"] for dict in plot_data]
-                    time_agent_std = [dict["Agent"]["std"] for dict in plot_data]
-                    time_dcmh_mean = [dict["DCMH"]["mean"] for dict in plot_data]
-                    time_dcmh_std = [dict["DCMH"]["std"] for dict in plot_data]
+                    time_agent_mean = np.array([dict["Agent"]["mean"] for dict in plot_data])
+                    #time_agent_std = np.array([dict["Agent"]["std"] for dict in plot_data])
+                    time_dcmh_mean = np.array([dict["DCMH"]["mean"] for dict in plot_data])
+                    #time_dcmh_std = np.array([dict["DCMH"]["std"] for dict in plot_data])
 
                     sns.set_theme(style="darkgrid")
                     plt.figure(figsize=(14, 10))
-                    plt.errorbar(x_values, time_dcmh_mean, yerr=time_dcmh_std, fmt='o', label='DCMH (ours)', markersize=10, capsize=7, color=dcmh_color)
+                    plt.scatter(x_values, time_dcmh_mean,label='DCMH (ours)', s=200, marker='s', color=dcmh_color)
                     plt.plot(x_values, time_dcmh_mean, 'r--',color=dcmh_color, linewidth=0.5, alpha=0.5)
-                    plt.errorbar(x_values, time_agent_mean, yerr=time_agent_std, fmt='o', label='DRL-Agent', markersize=10, capsize=7, color=agent_color)
+                    plt.scatter(x_values, time_agent_mean,label='DRL-Agent', s=200, marker='^', color=agent_color)
                     plt.plot(x_values, time_agent_mean, 'r--', color=agent_color,linewidth=0.5, alpha=0.5)
-                    plt.xscale('log')
+                    plt.loglog()
+                    plt.ylim(0.0001,1000)
                     plt.xlabel('Network size',fontsize=20)
-                    plt.ylabel('Evading Time (s)',fontsize=20)
-                    #custom_labels = ["kar (34)", "words (0.11k)", "vote (0.89k)", "pow (4.9k)", "fb (6.3k)"]
-                    custom_labels = ["kar (0.03k)", "words (0.11k)", "vote (0.89k)", "pow (4.9k)"]
+                    plt.ylabel('Mean Evading Time (s)',fontsize=20)
+                    custom_labels = ["kar (0.034k)", "words (0.11k)", "vote (0.89k)", "pow (4.9k)", "fb (6.3k)"]
+                    #custom_labels = ["kar (0.03k)", "words (0.11k)", "vote (0.89k)", "pow (4.9k)"]
                     plt.xticks(ticks=x_values, labels=custom_labels,rotation=45,ha="center", fontsize=15)
                     plt.legend(fontsize=20)
                     plt.grid(True)
