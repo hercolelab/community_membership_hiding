@@ -53,7 +53,7 @@ def exp(cfg: DictConfig, save_path: str, agent: Agent, wandb_cfg = None):
         beta = cfg["beta"]
 
         #Candidate hyperparameters
-        evader_cfg = cfg[f"{cfg['dataset']}"][f"training_{cfg['train_alg']}"][f"testing_{cfg['test_alg']}"][f"tau_{cfg['tau']}"][f"beta_{cfg['beta']}"]
+        evader_cfg = cfg[f"{cfg['dataset']}"][f"testing_{cfg['test_alg']}"][f"tau_{cfg['tau']}"][f"beta_{cfg['beta']}"]
         evader_cfg['T'] = wandb_cfg.max_it
         evader_cfg['lr'] = wandb_cfg.lr
         evader_cfg['lambd'] = wandb_cfg.lambd
@@ -91,10 +91,10 @@ def main(cfg: DictConfig) -> None:
         "kar": FilePaths.KAR.value,
         "words": FilePaths.WORDS.value,
         "vote": FilePaths.VOTE.value,
-        "nets": FilePaths.NETS.value,
         "pow": FilePaths.POW.value,
         "fb": FilePaths.FB_75.value,
-        "astr": FilePaths.ASTR.value,
+        "arxiv": FilePaths.ARXIV.value,
+        "dblp": FilePaths.DBLP.value,
     }
 
     dataset = dataset_names[cfg["dataset"]]

@@ -22,10 +22,9 @@ dataset_names = {
     FilePaths.KAR.value: "kar",
     FilePaths.WORDS.value: "words",
     FilePaths.VOTE.value: "vote",
-    FilePaths.NETS.value: "nets",
     FilePaths.POW.value: "pow",
     FilePaths.FB_75.value: "fb",
-    FilePaths.ASTR.value: "astr",
+    FilePaths.ARXIV.value: "arxiv",
     FilePaths.DBLP.value: "dblp",
 }
 
@@ -40,7 +39,8 @@ def main(cfg: DictConfig):
         #FilePaths.VOTE.value,
         #FilePaths.POW.value,
         #FilePaths.FB_75.value,
-        FilePaths.DBLP.value,
+        FilePaths.ARXIV.value,
+        #FilePaths.DBLP.value,
     ]
     detection_algs = [
         DetectionAlgorithmsNames.GRE.value,
