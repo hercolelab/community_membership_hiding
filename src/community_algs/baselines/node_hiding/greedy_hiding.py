@@ -177,12 +177,9 @@ class GreedyHiding:
         graph = self.graph.copy()
         communities = self.original_community_structure
         steps = self.steps
-        #target_community = self.target_community.copy()
+        target_community = self.target_community.copy()
 
         while steps > 0:
-
-            """
-            #OLD VERSION: too slow!
 
             # Get the inter-community node with the highest degree, (add edge)
             candidate_1 = self.get_inter_community_node(target_community, graph)
@@ -235,35 +232,6 @@ class GreedyHiding:
                 graph = graph_2
                 communities = communities_2
                 target_community = self.get_new_community(communities_2)
-            """
-            if self.coin is None:
-                self.coin = random.choice([0, 1])
-            
-            if self.coin == 0:
-                if len(self.possible_edges_add) == 0:
-                    self.coin = 1
-                    edge = self.possible_edges_remove.pop(0)
-                    edge = (edge[0], edge[1])
-                    graph.remove_edge(*edge)
-                else: 
-                    # Get the inter-community node with the highest degree, (add edge)
-                    edge = self.possible_edges_add.pop(0)
-                    edge = (edge[0], edge[1])
-                    graph.add_edge(*edge)
-                    self.coin = 1
-
-            else:
-                if len(self.possible_edges_remove) == 0:
-                    self.coin = 0
-                    edge = self.possible_edges_add.pop(0)
-                    edge = (edge[0], edge[1])
-                    graph.add_edge(*edge)
-                else:
-                    # Get the intra-community node with the highest degree, (remove edge)
-                    edge = self.possible_edges_remove.pop(0)
-                    edge = (edge[0], edge[1])
-                    graph.remove_edge(*edge)
-                    self.coin = 0
 
             steps -= 1
 
