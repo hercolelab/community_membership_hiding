@@ -13,6 +13,7 @@ import seaborn as sns
 import scipy
 import json
 import os
+import math
 
 
 class FilePaths(Enum):
@@ -513,7 +514,7 @@ class Utils:
                     {
                         "Algorithm": algs,
                         metric.capitalize(): [ mean([
-                                2 * (log[alg]["goal"][i] * log[alg]["nmi"][i]) / (log[alg]["goal"][i] + log[alg]["nmi"][i])
+                                0 if (log[alg]["goal"][i] + log[alg]["nmi"][i]) == 0 else 2 * (log[alg]["goal"][i] * log[alg]["nmi"][i]) / (log[alg]["goal"][i] + log[alg]["nmi"][i])
                                 for i in range(len(log[alg]["goal"]))
                             ]) for alg in algs]
                     }
@@ -647,7 +648,7 @@ class Utils:
                         aspect=2,
                         palette=palette,
                         errorbar="ci",
-                        #errorbar=df_confidence_binary_test,
+                        ci=90
                     )
                     g.set_axis_labels("Datasets", f"Mean {metric.capitalize()}", fontsize=15)
                     sns.move_legend(g, "upper right", bbox_to_anchor=(1, 0.7), frameon=False)

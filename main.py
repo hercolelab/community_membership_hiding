@@ -16,16 +16,14 @@ from hydra.core.hydra_config import HydraConfig
 
 # Variables to choose the mode of the script
 TRAIN = False
-TEST = True
+TEST = False
 
 dataset_names = {
     FilePaths.KAR.value: "kar",
     FilePaths.WORDS.value: "words",
     FilePaths.VOTE.value: "vote",
-    FilePaths.NETS.value: "nets",
     FilePaths.POW.value: "pow",
     FilePaths.FB_75.value: "fb",
-    FilePaths.ASTR.value: "astr",
 }
 
 
@@ -37,13 +35,13 @@ def main(cfg: DictConfig):
         #FilePaths.KAR.value,
         #FilePaths.WORDS.value,
         #FilePaths.VOTE.value,
-        FilePaths.POW.value,
+        #FilePaths.POW.value,
         #FilePaths.FB_75.value,
     ]
     detection_algs = [
         #DetectionAlgorithmsNames.GRE.value,
         #DetectionAlgorithmsNames.LOUV.value,
-        DetectionAlgorithmsNames.WALK.value,
+        #DetectionAlgorithmsNames.WALK.value,
     ]
 
     with open("src/community_algs/dcmh/conf/base.yaml", "r") as file:
@@ -113,10 +111,10 @@ def main(cfg: DictConfig):
             #detection_algs= [ DetectionAlgorithmsNames.GRE.value, DetectionAlgorithmsNames.LOUV.value],
             #detection_algs= [ DetectionAlgorithmsNames.WALK.value],
             taus=[0.5],
-            betas=[0.5,1,2],
-            #betas=[0.5,1],
+            #betas=[0.5,1,2],
+            betas=[0.5,1],
         )
-    save_time = False
+    save_time = True
     if save_time:
         Utils.plot_time_all_datasets(
             datasets= [FilePaths.KAR.value,FilePaths.WORDS.value, FilePaths.VOTE.value, FilePaths.POW.value, FilePaths.FB_75.value],
@@ -124,8 +122,8 @@ def main(cfg: DictConfig):
             #detection_algs= [ DetectionAlgorithmsNames.GRE.value, DetectionAlgorithmsNames.LOUV.value],
             #detection_algs= [ DetectionAlgorithmsNames.WALK.value],
             taus=[0.5],
-            betas=[0.5,1,2],
-            #betas=[0.5,1],
+            #betas=[0.5,1,2],
+            betas=[0.5,1],
         )
 
 if __name__ == "__main__":

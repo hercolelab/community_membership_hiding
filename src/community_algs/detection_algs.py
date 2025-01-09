@@ -295,7 +295,7 @@ class CommunityDetectionAlgorithm(object):
             list of list of vertices in each cluster
         """
 
-        if btw is None:
+        if args_btw is None:
             btw = graph.community_edge_betweenness()
         else:
             btw = graph.community_edge_betweenness(**args_btw)

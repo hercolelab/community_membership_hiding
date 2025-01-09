@@ -79,7 +79,7 @@ class GreedyHiding:
         """
         subgraph = graph.subgraph(community)
         neighbors = list(subgraph.neighbors(self.target_node))
-        node = max(neighbors, key=lambda x: subgraph.degree(x))
+        node = max(neighbors, key=lambda x: subgraph.degree(x)) if neighbors else None
         return node
 
 
@@ -107,7 +107,7 @@ class GreedyHiding:
         inter_community_nodes -= set(graph.neighbors(self.target_node))
 
         # Get the node with the highest degree
-        node = max(inter_community_nodes, key=lambda x: graph.degree(x))
+        node = max(inter_community_nodes, key=lambda x: graph.degree(x)) if inter_community_nodes else None
         return node
 
     def compute_loss(
