@@ -16,7 +16,7 @@ from hydra.core.hydra_config import HydraConfig
 
 # Variables to choose the mode of the script
 TRAIN = False
-TEST = False
+TEST = True
 
 dataset_names = {
     FilePaths.KAR.value: "kar",
@@ -101,30 +101,7 @@ def main(cfg: DictConfig):
                         log.info("* * Beta Node = {}".format(beta))
                         node_hiding.set_parameters(beta=beta, tau=tau, output_dir=HydraConfig.get().runtime.output_dir)
                         node_hiding.run_experiment()
-
-
-    save_f1 = False
-    if save_f1:
-        Utils.plot_f1_all_datasets(
-            datasets= [FilePaths.KAR.value,FilePaths.WORDS.value, FilePaths.VOTE.value, FilePaths.POW.value, FilePaths.FB_75.value],
-            detection_algs= [ DetectionAlgorithmsNames.GRE.value, DetectionAlgorithmsNames.LOUV.value,DetectionAlgorithmsNames.WALK.value],
-            #detection_algs= [ DetectionAlgorithmsNames.GRE.value, DetectionAlgorithmsNames.LOUV.value],
-            #detection_algs= [ DetectionAlgorithmsNames.WALK.value],
-            taus=[0.5],
-            #betas=[0.5,1,2],
-            betas=[0.5,1],
-        )
-    save_time = True
-    if save_time:
-        Utils.plot_time_all_datasets(
-            datasets= [FilePaths.KAR.value,FilePaths.WORDS.value, FilePaths.VOTE.value, FilePaths.POW.value, FilePaths.FB_75.value],
-            detection_algs= [ DetectionAlgorithmsNames.GRE.value, DetectionAlgorithmsNames.LOUV.value,DetectionAlgorithmsNames.WALK.value],
-            #detection_algs= [ DetectionAlgorithmsNames.GRE.value, DetectionAlgorithmsNames.LOUV.value],
-            #detection_algs= [ DetectionAlgorithmsNames.WALK.value],
-            taus=[0.5],
-            #betas=[0.5,1,2],
-            betas=[0.5,1],
-        )
+        
 
 if __name__ == "__main__":
     main()
