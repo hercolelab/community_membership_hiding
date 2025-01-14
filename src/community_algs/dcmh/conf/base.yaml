@@ -202,6 +202,7 @@ pow:
                 lr : 0.0048928
                 lambd: 17.61626
 
+
 fb:
   training_greedy:
     testing_greedy:
@@ -249,4 +250,52 @@ fb:
             T: 50
             lr : 0.00816
             lambd: 0.3
+
+arxiv:
+  training_greedy:
+    testing_greedy:
+      attention_coeffs: [0.3333333333333333, 0.3333333333333333, 0.16666666666666666, 0.16666666666666666]
+      tau_0.5:
+        beta_0.5:
+            T: 70
+            lr : 0.007
+            lambd: 56.9
+        beta_1:
+            T: 70
+            lr : 0.0099
+            lambd: 19.24
+        beta_2:
+            T: 120
+            lr : 0.00853
+            lambd: 65.75
+    testing_louvain:
+      attention_coeffs: [0.3333333333333333, 0.3333333333333333, 0.16666666666666666, 0.16666666666666666]
+      tau_0.5:
+        beta_0.5:
+            T: 70
+            lr : 0.007
+            lambd: 56.9
+        beta_1:
+            T: 70
+            lr : 0.0099
+            lambd: 19.24
+        beta_2:
+            T: 120
+            lr : 0.00853
+            lambd: 65.75
+    testing_walktrap:
+      attention_coeffs: [0.3333333333333333, 0.3333333333333333, 0.16666666666666666, 0.16666666666666666]
+      tau_0.5:
+        beta_0.5:
+            T: 70
+            lr : 0.007
+            lambd: 56.9
+        beta_1:
+            T: 70
+            lr : 0.0099
+            lambd: 19.24
+        beta_2:
+            T: 120
+            lr : 0.00853
+            lambd: 65.75
 

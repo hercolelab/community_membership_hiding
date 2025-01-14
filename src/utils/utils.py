@@ -32,6 +32,8 @@ class FilePaths(Enum):
     KAR = DATASETS_DIR + "/kar.mtx"
     WORDS = DATASETS_DIR + "/words.mtx"
     VOTE = DATASETS_DIR + "/vote.mtx"
+    ARXIV = DATASETS_DIR + "/arxiv_CondMat.txt"
+
 
     # DIAG DATASETS
     AMZ = DATASETS_DIR + "/amz.gml"

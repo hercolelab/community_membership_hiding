@@ -24,6 +24,7 @@ dataset_names = {
     FilePaths.VOTE.value: "vote",
     FilePaths.POW.value: "pow",
     FilePaths.FB_75.value: "fb",
+     FilePaths.ARXIV.value: "arxiv",
 }
 
 
@@ -37,11 +38,12 @@ def main(cfg: DictConfig):
         #FilePaths.VOTE.value,
         #FilePaths.POW.value,
         #FilePaths.FB_75.value,
+        FilePaths.ARXIV.value,
     ]
     detection_algs = [
         #DetectionAlgorithmsNames.GRE.value,
         #DetectionAlgorithmsNames.LOUV.value,
-        #DetectionAlgorithmsNames.WALK.value,
+        DetectionAlgorithmsNames.WALK.value,
     ]
 
     with open("src/community_algs/dcmh/conf/base.yaml", "r") as file:
