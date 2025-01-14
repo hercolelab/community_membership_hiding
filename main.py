@@ -35,15 +35,15 @@ def main(cfg: DictConfig):
     datasets = [
         #FilePaths.KAR.value,
         #FilePaths.WORDS.value,
-        #FilePaths.VOTE.value,
+        FilePaths.VOTE.value,
         #FilePaths.POW.value,
         #FilePaths.FB_75.value,
-        FilePaths.ARXIV.value,
+        #FilePaths.ARXIV.value,
     ]
     detection_algs = [
-        #DetectionAlgorithmsNames.GRE.value,
+        DetectionAlgorithmsNames.GRE.value,
         #DetectionAlgorithmsNames.LOUV.value,
-        DetectionAlgorithmsNames.WALK.value,
+        #DetectionAlgorithmsNames.WALK.value,
     ]
 
     with open("src/community_algs/dcmh/conf/base.yaml", "r") as file:
@@ -82,12 +82,13 @@ def main(cfg: DictConfig):
 
                 # Tau defines the strength of the constraint on the goal achievement
                 #taus = [0.3, 0.5, 0.8]
-                taus = [0.5]
+                taus = [0.3, 0.8]
+                #taus = [0.5]
                 # BETAs defines the number of actions to perform
                 # Beta for the node hiding task is a multiplier of mean degree of the
                 # the graph
-                #node_betas = [0.5, 1, 2]
-                node_betas = [2]
+                node_betas = [0.5, 1, 2]
+                #node_betas = [2]
 
                 # Initialize the test class
                 node_hiding = NodeHiding(agent=agent, model_path=model_path, dcmh_config=cfg)

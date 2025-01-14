@@ -109,7 +109,33 @@ vote:
   training_greedy:
     testing_greedy:
       attention_coeffs: [0.018328100446691, 0.06229124046212699, 0.00036560831973974484, 0.9190150507714423]
+      tau_0.3:
+        beta_0.5:
+            T: 100
+            lr : 0.0377
+            lambd: 15.319
+        beta_1:
+            T: 90
+            lr : 0.0131
+            lambd: 8.1586
+        beta_2:
+            T: 60
+            lr : 0.0424
+            lambd: 15.4
       tau_0.5:
+        beta_0.5:
+            T: 100
+            lr : 0.0377
+            lambd: 15.319
+        beta_1:
+            T: 90
+            lr : 0.0131
+            lambd: 8.1586
+        beta_2:
+            T: 60
+            lr : 0.0424
+            lambd: 15.4
+      tau_0.8:
         beta_0.5:
             T: 100
             lr : 0.0377
