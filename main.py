@@ -33,9 +33,9 @@ log = logging.getLogger(__name__)
 def main(cfg: DictConfig):
 
     datasets = [
-        #FilePaths.KAR.value,
+        FilePaths.KAR.value,
         #FilePaths.WORDS.value,
-        FilePaths.VOTE.value,
+        #FilePaths.VOTE.value,
         #FilePaths.POW.value,
         #FilePaths.FB_75.value,
         #FilePaths.ARXIV.value,
@@ -82,8 +82,8 @@ def main(cfg: DictConfig):
 
                 # Tau defines the strength of the constraint on the goal achievement
                 #taus = [0.3, 0.5, 0.8]
-                taus = [0.3, 0.8]
-                #taus = [0.5]
+                #taus = [0.3, 0.8]
+                taus = [0.5]
                 # BETAs defines the number of actions to perform
                 # Beta for the node hiding task is a multiplier of mean degree of the
                 # the graph
