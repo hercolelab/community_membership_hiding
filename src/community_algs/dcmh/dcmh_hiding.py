@@ -41,8 +41,13 @@ class DcmhHiding():
         self.a_u = torch.zeros(self.graph.vcount(), dtype=torch.int)
         self.a_u[self.neighbors] = 1
         self.a_u = self.a_u.to(self.device)
+        """
+        #Possibility to fix some nodes in the perturbation
+        ## An example could be to avoid disconnecting neighbors with degree 1
         self.fixed_nodes = torch.LongTensor([v for v in self.neighbors if self.graph.degree(v) == 1]+[v for v in self.neighbors if self.graph.degree(self.u) == 1])
         self.fixed_nodes = self.fixed_nodes.to(self.device)
+        """
+        self.fixed_nodes = []
         ## Candidate list for the loss
         self.v_opt = self.candidate_list(self.graph,self.old_communities,self.u,self.attention)
         self.v_opt[self.u] = torch.Tensor([0])
