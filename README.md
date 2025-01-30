@@ -63,7 +63,7 @@ python main.py
 │   │   │   │   ├── permanence.py
 │   │   │   │   ├── safeness.py
 │   │   │   │   └── safeness_tets.py
-│   │   │   ├── node_hiding                 # Node Deception algorithms
+│   │   │   ├── node_hiding                 # Community Membership Hiding algorithms
 │   │   │   │   ├── degree_hiding.py
 │   │   │   │   ├── __init__.py
 │   │   │   │   ├── random_hiding.py
