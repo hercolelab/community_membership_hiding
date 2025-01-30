@@ -36,17 +36,13 @@ python main.py
 
 ```bash
 ├── dataset
-│   ├── archives                            # Contains the archives of the datasets 
-│   │   └── ...
 │   ├── data                                # Contains the datasets
 │   │   └── ...
 │   └── readme.md
-├── images                                  # Images used in the README
+├── images                                  
 │   └── ...
 ├── notebook                                # Contains the notebooks used for the analysis
-│   └── ...                           
-├── references                              # Contains articles used for the thesis
-│   └── ...                           
+│   └── ...                                                    
 ├── src                                     # Contains the source code
 │   ├── agent
 │   │   ├── a2c                             # Contains the agent code
@@ -99,7 +95,7 @@ python main.py
 │   │   ├── readme.md
 │   │   └── utils.py
 │   └── __init__.py
-├── test                                    # Contains the output of the test
+├── outputs                                    # Contains the outputs of the test
 │   └── ...
 ├── main.py
 ├── README.md
