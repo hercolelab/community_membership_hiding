@@ -1,4 +1,11 @@
 # Community Membership Hiding 
+
+<p align="center">
+  <img src="images/old_communities_v2.png" width="30%" />
+  <img src="images/new_graph_v2.png" width="30%" />
+  <img src="images/new_communities_v2.png" width="30%" />
+</p>
+
 ## Requirements
 
 Make sure to have conda installed, then run:
