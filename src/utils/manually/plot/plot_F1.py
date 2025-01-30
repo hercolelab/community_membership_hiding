@@ -6,7 +6,6 @@ import numpy as np
 import pandas as pd
 import seaborn as sns
 import json
-import cv2
 import math
 import os
 import numpy as np
@@ -284,7 +283,7 @@ if __name__ == "__main__":
         log_name="evaluation_node_hiding",
         algs=["Agent", "Random", "Degree", "Centrality", "Roam", "Greedy"],
         detection_alg=DETECTION_ALG,
-        metrics=["goal", "nmi", "steps", "time"],
+        metrics=["goal", "nmi", "steps"],
         datasets=["kar", "words", "vote", "pow", "fb-75"],
         beta=BETA,
         tau=TAU,

@@ -1,6 +1,6 @@
 """Module for the GraphEnviroment class"""
 from src.community_algs.detection_algs import CommunityDetectionAlgorithm
-from src.utils.utils import HyperParams, SimilarityFunctionsNames, Utils
+from src.utils.utils import HyperParams, editable_HyperParams, SimilarityFunctionsNames, Utils
 from src.community_algs.metrics.similarity import CommunitySimilarity, GraphSimilarity
 from typing import List, Tuple, Callable
 
@@ -46,8 +46,10 @@ class GraphEnvironment(object):
             Name of the graph similarity function to use, by default
             SimilarityFunctionsNames.JAC_1.value
         """
-        random.seed(time.time())
+        
         self.device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+        self.seed = editable_HyperParams.seed
+        random.seed(self.seed)
 
         # ° ---- GRAPH ---- ° #
         self.env_name = None
@@ -143,7 +145,7 @@ class GraphEnvironment(object):
 
     def change_target_node(self, node_target: int = None) -> None:
         """
-        Change the target node to remove from the community
+        Change the target node to hide from the community
 
         Parameters
         ----------
@@ -189,7 +191,7 @@ class GraphEnvironment(object):
         else:
             self.community_target = community
         # Change the target node to remove from the community
-        self.change_target_node(node_target=node_target)
+        #self.change_target_node(node_target=node_target)
 
     def random_community(self) -> None:
         """

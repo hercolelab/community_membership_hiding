@@ -1,0 +1,327 @@
+dataset: kar
+train_alg: greedy
+test_alg: greedy
+
+attention: True
+reinitialization: True
+dist_f: frobenius_dist
+u: 0
+tau: 0.5
+budget_factor: 1
+
+kar:
+  training_greedy:
+    testing_greedy:
+      attention_coeffs: [0.713385915481054, 0.1346800221052267, 0.10264636655226009, 0.049287695861459285]
+      tau_0.5:
+        beta_0.5:
+            T: 60
+            lr : 0.0982
+            lambd: 0.798
+        beta_1:
+            T: 100
+            lr : 0.22
+            lambd: 1.73
+        beta_2:
+            T: 100
+            lr : 0.237
+            lambd: 3.436
+    testing_louvain:
+      attention_coeffs: [0.713385915481054, 0.1346800221052267, 0.10264636655226009, 0.049287695861459285]
+      tau_0.5:
+        beta_0.5:
+            T: 100
+            lr : 0.094
+            lambd: 1.155
+        beta_1:
+            T: 80
+            lr : 0.4
+            lambd: 4.8
+        beta_2:
+            T: 80
+            lr : 0.388
+            lambd: 1.854
+    testing_walktrap:
+      attention_coeffs: [0.3333333333333333, 0.3333333333333333, 0.16666666666666666, 0.16666666666666666]
+      tau_0.5:
+        beta_0.5:
+            T: 70
+            lr : 0.17
+            lambd: 0.699
+        beta_1:
+            T: 60
+            lr : 0.3
+            lambd: 3.77
+        beta_2:
+            T: 100
+            lr : 0.479
+            lambd: 4.429
+
+words:
+  training_greedy:
+    testing_greedy:
+      attention_coeffs: [0.0004028761034536307, 0.053901189311128125, 0.08197490788515284, 0.8637210267002654]
+      tau_0.5:
+        beta_0.5:
+            T: 60
+            lr : 0.0549
+            lambd: 0.543
+        beta_1:
+            T: 90
+            lr : 0.012
+            lambd: 0.827
+        beta_2:
+            T: 50
+            lr : 0.01
+            lambd: 1.225
+    testing_louvain:
+      attention_coeffs: [0.0004028761034536307, 0.053901189311128125, 0.08197490788515284, 0.8637210267002654]
+      tau_0.5:
+        beta_0.5:
+            T: 60
+            lr : 0.0681
+            lambd: 0.5428
+        beta_1:
+            T: 100
+            lr : 0.0678
+            lambd: 1.678
+        beta_2:
+            T: 70
+            lr : 0.169
+            lambd: 1.318
+    testing_walktrap:
+      attention_coeffs: [0.0004028761034536307, 0.053901189311128125, 0.08197490788515284, 0.8637210267002654]
+      tau_0.5:
+        beta_0.5:
+            T: 90
+            lr : 0.0827
+            lambd: 0.456
+        beta_1:
+            T: 70
+            lr : 0.0482
+            lambd: 0.556
+        beta_2:
+            T: 90
+            lr : 0.1817
+            lambd: 1.18
+
+vote:
+  training_greedy:
+    testing_greedy:
+      attention_coeffs: [0.018328100446691, 0.06229124046212699, 0.00036560831973974484, 0.9190150507714423]
+      tau_0.3:
+        beta_0.5:
+            T: 100
+            lr : 0.0377
+            lambd: 15.319
+        beta_1:
+            T: 90
+            lr : 0.0131
+            lambd: 8.1586
+        beta_2:
+            T: 60
+            lr : 0.0424
+            lambd: 15.4
+      tau_0.5:
+        beta_0.5:
+            T: 100
+            lr : 0.0377
+            lambd: 15.319
+        beta_1:
+            T: 90
+            lr : 0.0131
+            lambd: 8.1586
+        beta_2:
+            T: 60
+            lr : 0.0424
+            lambd: 15.4
+      tau_0.8:
+        beta_0.5:
+            T: 100
+            lr : 0.0377
+            lambd: 15.319
+        beta_1:
+            T: 90
+            lr : 0.0131
+            lambd: 8.1586
+        beta_2:
+            T: 60
+            lr : 0.0424
+            lambd: 15.4
+    testing_louvain:
+      attention_coeffs: [0.018328100446691, 0.06229124046212699, 0.00036560831973974484, 0.9190150507714423]
+      tau_0.5:
+        beta_0.5:
+            T: 100
+            lr : 0.057
+            lambd: 6.169
+        beta_1:
+            T: 50
+            lr : 0.0577
+            lambd: 3.40
+        beta_2:
+            T: 80
+            lr : 0.0855
+            lambd: 14.51
+    testing_walktrap:
+      attention_coeffs: [0.7074295661981665, 0.1925448126738948, 0.09996535309036757, 0.0000602803757113]
+      tau_0.5:
+        beta_0.5:
+            T: 90
+            lr : 0.0558
+            lambd: 1.233
+        beta_1:
+            T: 70
+            lr : 0.06
+            lambd: 9.845
+        beta_2:
+            T: 100
+            lr : 0.06
+            lambd: 0.283
+
+
+pow:
+  training_greedy:
+    testing_greedy:
+       attention_coeffs: [0.8945304021834678, 0.10495034499910315, 0.00032443811377543084, 0.00019481470365358375]
+       tau_0.5:
+            beta_0.5:
+                T: 70
+                lr : 0.00993
+                lambd: 0.4525
+            beta_1:
+                T: 100
+                lr : 0.00644
+                lambd: 24.848
+            beta_2:
+                T: 100
+                lr : 0.00192
+                lambd: 20.193
+    testing_louvain:
+        attention_coeffs: [0.3333333333333333, 0.3333333333333333, 0.16666666666666666, 0.16666666666666666]
+        tau_0.5:
+            beta_0.5:
+                T: 90
+                lr : 0.00238
+                lambd: 13.59
+            beta_1:
+                T: 140
+                lr : 0.000828
+                lambd: 17.8519
+            beta_2:
+                T: 60
+                lr : 0.00815
+                lambd: 24.8642
+    testing_walktrap:
+        attention_coeffs: [0.3333333333333333, 0.3333333333333333, 0.16666666666666666, 0.16666666666666666]
+        tau_0.5:
+            beta_0.5:
+                T: 120
+                lr : 0.0064854
+                lambd: 30.45214
+            beta_1:
+                T: 140
+                lr : 0.0073601
+                lambd: 29.59273
+            beta_2:
+                T: 50
+                lr : 0.0048928
+                lambd: 17.61626
+
+
+fb:
+  training_greedy:
+    testing_greedy:
+      attention_coeffs: [0.3333333333333333, 0.3333333333333333, 0.16666666666666666, 0.16666666666666666]
+      tau_0.5:
+        beta_0.5:
+            T: 100
+            lr : 0.00545
+            lambd: 19.768
+        beta_1:
+            T: 150
+            lr : 0.00219
+            lambd: 5.388
+        beta_2:
+            T: 130
+            lr : 0.004
+            lambd: 1.59
+    testing_louvain:
+      attention_coeffs: [0.3333333333333333, 0.3333333333333333, 0.16666666666666666, 0.16666666666666666]
+      tau_0.5:
+        beta_0.5:
+            T: 100
+            lr : 0.00685
+            lambd: 13.1
+        beta_1:
+            T: 150
+            lr : 0.0099
+            lambd: 20.942
+        beta_2:
+            T: 50
+            lr : 0.00987
+            lambd: 5.044
+    testing_walktrap:
+      attention_coeffs: [0.3333333333333333, 0.3333333333333333, 0.16666666666666666, 0.16666666666666666]
+      tau_0.5:
+        beta_0.5:
+            T: 130
+            lr : 0.00451
+            lambd: 11.541
+        beta_1:
+            T: 150
+            lr : 0.00612
+            lambd: 2.8
+        beta_2:
+            T: 50
+            lr : 0.00816
+            lambd: 0.3
+
+arxiv:
+  training_greedy:
+    testing_greedy:
+      attention_coeffs: [0.3333333333333333, 0.3333333333333333, 0.16666666666666666, 0.16666666666666666]
+      tau_0.5:
+        beta_0.5:
+            T: 70
+            lr : 0.007
+            lambd: 56.9
+        beta_1:
+            T: 70
+            lr : 0.0099
+            lambd: 19.24
+        beta_2:
+            T: 120
+            lr : 0.00853
+            lambd: 65.75
+    testing_louvain:
+      attention_coeffs: [0.3333333333333333, 0.3333333333333333, 0.16666666666666666, 0.16666666666666666]
+      tau_0.5:
+        beta_0.5:
+            T: 70
+            lr : 0.007
+            lambd: 56.9
+        beta_1:
+            T: 70
+            lr : 0.0099
+            lambd: 19.24
+        beta_2:
+            T: 120
+            lr : 0.00853
+            lambd: 65.75
+    testing_walktrap:
+      attention_coeffs: [0.3333333333333333, 0.3333333333333333, 0.16666666666666666, 0.16666666666666666]
+      tau_0.5:
+        beta_0.5:
+            T: 70
+            lr : 0.007
+            lambd: 56.9
+        beta_1:
+            T: 70
+            lr : 0.0099
+            lambd: 19.24
+        beta_2:
+            T: 120
+            lr : 0.00853
+            lambd: 65.75
+
