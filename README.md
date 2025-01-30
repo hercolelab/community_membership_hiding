@@ -70,10 +70,10 @@ python main.py
 │   │   │   │   └── roam_hiding.py
 │   │   │   ├── __init__.py
 │   │   │   └── readme.md
-|   |   ├── dcmh                            #contains the implementation of nabla-CMH
+│   │   ├── dcmh                            #contains the implementation of nabla-CMH
 │   │   │   ├── conf
-|   │   │   │   └── base.yaml
-|   │   │   └── dcmh_hiding.py
+│   │   │   │   └── base.yaml
+│   │   │   └── dcmh_hiding.py
 │   │   ├── metrics                         # Contains an implementation of the metrics used for the evaluation
 │   │   │   ├── deception_score.py
 │   │   │   ├── nmi.py
